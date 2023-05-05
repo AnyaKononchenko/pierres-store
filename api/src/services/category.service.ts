@@ -2,11 +2,7 @@ import slugify from 'slugify'
 
 import Category from '../models/Category'
 import { CategoryDocument } from '../@types/category'
-import {
-  BadRequestError,
-  InternalServerError,
-  NotFoundError,
-} from '../helpers/apiError'
+import { InternalServerError, NotFoundError } from '../helpers/apiError'
 import { DeletedDocument } from '../@types/common'
 
 const create = async (
@@ -23,7 +19,7 @@ const findBySlug = async (categoryName: string): Promise<CategoryDocument> => {
   })
 
   if (!foundCategory) {
-    throw new NotFoundError(`Category ${categoryName} not found`)
+    throw new NotFoundError(`Category '${categoryName}' not found`)
   }
 
   return foundCategory

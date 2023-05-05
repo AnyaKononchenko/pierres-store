@@ -48,7 +48,7 @@ app.use(passport.session())
 */
 
 // Set up routers
-app.use('/api/v1/movies', movieRouter)
+// app.use('/api/v1/movies', movieRouter)
 app.use('/api/v1/categories', categoryRouter)
 
 // Custom API error handler
