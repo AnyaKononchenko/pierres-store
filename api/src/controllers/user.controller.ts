@@ -1,31 +1,56 @@
 import { Request, Response, NextFunction } from 'express'
 import slugify from 'slugify'
 
-import Product from '../models/Product'
-import productService from '../services/product.service'
-import { ProductRequestFields } from '../@types/product'
+import User from '../models/User'
+import userService from '../services/user.service'
+import { Slug } from '../@types/common'
 import { BadRequestError } from '../helpers/apiError'
 import { sendResponse } from '../helpers/responseHandler'
 
-export const createProduct = async (
-  req: Request<{}, {}, ProductRequestFields, {}>,
+export const signUp = async (
+  req: Request<{}, {}, Slug, {}>,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const image = req.file
 
-    const product = new Product({
+    const user = new User({
       ...req.body,
       slug: slugify(req.body.name.toLowerCase()),
       image: image && image.filename,
     })
-    await productService.create(product)
+
+    const token = await userService.signUp(user)
 
     sendResponse(res, {
       statusCode: 201,
-      message: `Created a new product '${req.body.name}'`,
-      payload: product,
+      message: `Registered a new user '${user.name}'. Please, verify your email address to finish registration.`,
+      payload: token,
+    })
+  } catch (error) {
+    if (error instanceof Error && error.name == 'ValidationError') {
+      next(new BadRequestError('Invalid Request', 400, error))
+    } else {
+      next(error)
+    }
+  }
+}
+
+export const verify = async (
+  req: Request<{}, {}, Slug, { token: string }>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { token } = req.query
+
+    const verifiedUser = await userService.verify(token)
+
+    sendResponse(res, {
+      statusCode: 201,
+      message: `Verified the user '${verifiedUser.name}'. Welcome to Pierre's General Store`,
+      payload: verifiedUser,
     })
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {
@@ -37,21 +62,21 @@ export const createProduct = async (
 }
 
 // get all categories or provide query param as name and get one
-export const getProduct = async (
-  req: Request<{}, {}, {}, ProductRequestFields>,
+export const getUser = async (
+  req: Request<{}, {}, {}, Slug>,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { name } = req.query
-    const foundProducts = name
-      ? await productService.findBySlug(name as string)
-      : await productService.findAll()
+    const foundUsers = name
+      ? await userService.findBySlug(name as string)
+      : await userService.findAll()
 
     sendResponse(res, {
       statusCode: 200,
-      message: 'Returned products',
-      payload: foundProducts,
+      message: 'Returned users',
+      payload: foundUsers,
     })
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {
@@ -62,8 +87,8 @@ export const getProduct = async (
   }
 }
 
-export const updateProduct = async (
-  req: Request<{}, {}, ProductRequestFields, ProductRequestFields>,
+export const updateUser = async (
+  req: Request<{}, {}, Slug, Slug>,
   res: Response,
   next: NextFunction
 ) => {
@@ -73,12 +98,12 @@ export const updateProduct = async (
 
     const update = image ? { ...req.body, image: image.filename } : req.body
 
-    const updatedProduct = await productService.update(name as string, update)
+    const updatedUser = await userService.update(name as string, update)
 
     sendResponse(res, {
       statusCode: 200,
-      message: 'Successfully updated a product',
-      payload: updatedProduct,
+      message: 'Successfully updated a user',
+      payload: updatedUser,
     })
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {
@@ -89,19 +114,19 @@ export const updateProduct = async (
   }
 }
 
-export const deleteProduct = async (
-  req: Request<{}, {}, {}, ProductRequestFields>,
+export const deleteUser = async (
+  req: Request<{}, {}, {}, Slug>,
   res: Response,
   next: NextFunction
 ) => {
   try {
     const { name } = req.query
 
-    await productService.remove(name)
+    await userService.remove(name)
 
     sendResponse(res, {
       statusCode: 200,
-      message: `Deleted a product '${name}'`,
+      message: `Deleted a user '${name}'`,
     })
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {

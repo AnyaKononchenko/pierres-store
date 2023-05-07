@@ -36,7 +36,6 @@ const update = async (
   let oldImage
   if (update.image) {
     const product = await Product.findOne({ slug: productName })
-    console.log(product)
     oldImage = product && product.image
   }
 
@@ -49,8 +48,6 @@ const update = async (
     update,
     { new: true }
   )
-
-  console.log(updatedProduct)
 
   if (!updatedProduct) {
     throw new InternalServerError(

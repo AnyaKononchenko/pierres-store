@@ -14,16 +14,17 @@ if (fs.existsSync('.env')) {
 export const ENVIRONMENT = process.env.NODE_ENV
 const prod = ENVIRONMENT === 'production' // Anything else is treated as 'dev'
 
+export const MONGODB_URI = process.env['MONGODB_ULR'] as string
+
 export const JWT_SECRET = process.env['JWT_TOKEN_PR_KEY'] as string
+
+export const SMTP_USERNAME = process.env['SMTP_USERNAME'] as string
+export const SMTP_PASSWORD = process.env['SMTP_PASSWORD'] as string
+
 export const GOOGLE_CLIENT_ID = process.env['GOOGLE_CLIENT_ID'] as string
 export const GOOGLE_CLIENT_SECRET = process.env[
   'GOOGLE_CLIENT_SECRET'
 ] as string
-export const MONGODB_URI = process.env['MONGODB_ULR'] as string
-// Use this instead if you want to use local mongodb
-// export const MONGODB_URI = (
-//   prod ? process.env['MONGODB_URI'] : process.env['MONGODB_URI_LOCAL']
-// ) as string
 
 if (!JWT_SECRET) {
   logger.error('No client secret. Set JWT_SECRET environment variable.')

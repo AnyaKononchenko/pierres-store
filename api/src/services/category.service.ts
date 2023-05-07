@@ -26,7 +26,7 @@ const findBySlug = async (categoryName: string): Promise<CategoryDocument> => {
 }
 
 const findAll = async (): Promise<CategoryDocument[]> => {
-  return await Category.find().sort({ createdAt: -1 })
+  return await Category.find()
 }
 
 const update = async (
