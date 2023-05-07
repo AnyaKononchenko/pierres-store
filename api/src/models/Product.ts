@@ -25,15 +25,14 @@ const productSchema: Schema = new Schema(
       min: 1,
       required: true,
     },
-    amount: {
+    inStock: {
       type: Number,
       default: 0,
       min: 0,
       required: true,
     },
-    rating: {
-      type: Number,
-      default: 0,
+    quality: {
+      type: String,
       required: true,
     },
     sold: {
@@ -43,6 +42,7 @@ const productSchema: Schema = new Schema(
     },
     category: {
       type: mongoose.Types.ObjectId,
+      ref: 'Category',
       required: true,
     },
     size: {

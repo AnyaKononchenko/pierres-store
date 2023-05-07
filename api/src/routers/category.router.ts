@@ -7,13 +7,14 @@ import {
   updateCategory,
 } from '../controllers/category.controller'
 import { isExist } from '../middlewares/categoryHandler'
+import categoryValidator from '../middlewares/validators/categoryValidator'
+import validate from '../middlewares/validators'
 
 const router = express.Router()
 
-// Every path we define here will get /api/v1/categories prefix
-router.post('/', createCategory)
+router.post('/', categoryValidator(), validate, createCategory)
 router.get('/', getCategory)
-router.put('/', isExist, updateCategory)
+router.put('/', isExist, categoryValidator(), validate, updateCategory)
 router.delete('/', deleteCategory)
 
 export default router

@@ -1,5 +1,4 @@
-import { Document } from 'mongoose'
-import { CategoryDocument } from './category'
+import mongoose, { Document } from 'mongoose'
 
 export type ProductDocument = Document & {
   name: string
@@ -7,16 +6,24 @@ export type ProductDocument = Document & {
   image: string
   description: string
   price: number
-  amount: number
-  rating: number
+  inStock: number
+  quality: Quality
+  reviews: number
   sold: number
-  category: CategoryDocument
+  category: mongoose.Types.ObjectId
   size?: Size
   color?: string
 }
 
 enum Size {
-  big = 'Big',
-  medium = 'Medium',
   small = 'Small',
+  medium = 'Medium',
+  big = 'Big',
+}
+
+enum Quality {
+  regular = 'Regular',
+  silver = 'Silver',
+  gold = 'Gold',
+  iridium = 'Iridium',
 }

@@ -1,10 +1,10 @@
 import { Request, RequestHandler, Response, NextFunction } from 'express'
 import slugify from 'slugify'
 
-import { BadRequestError } from '../helpers/apiError'
-import categoryService from '../services/category.service'
 import Category from '../models/Category'
+import categoryService from '../services/category.service'
 import { CategoryRequestFields } from '../@types/category'
+import { BadRequestError } from '../helpers/apiError'
 import { sendResponse } from '../helpers/responseHandler'
 
 export const createCategory: RequestHandler = async (
