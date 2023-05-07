@@ -25,14 +25,15 @@ const productSchema: Schema = new Schema(
       min: 1,
       required: true,
     },
+    quality: {
+      type: String,
+      enum: ['Regular', 'Silver', 'Gold', 'Iridium'],
+      default: 'Regular',
+    },
     inStock: {
       type: Number,
       default: 0,
       min: 0,
-      required: true,
-    },
-    quality: {
-      type: String,
       required: true,
     },
     sold: {
@@ -47,6 +48,7 @@ const productSchema: Schema = new Schema(
     },
     size: {
       type: String,
+      enum: ['Regular', 'Large', 'Deluxe'],
       required: false,
     },
     color: {

@@ -11,9 +11,9 @@ const validate = (req: Request, res: Response, next: NextFunction) => {
         message: errors.array()[0].msg,
       })
     }
-    next()
+    return next()
   } catch (error) {
-    next(error)
+    return next(error)
   }
 }
 

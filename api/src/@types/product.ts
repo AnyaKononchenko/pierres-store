@@ -8,7 +8,6 @@ export type ProductDocument = Document & {
   price: number
   inStock: number
   quality: Quality
-  reviews: number
   sold: number
   category: mongoose.Types.ObjectId
   size?: Size
@@ -16,9 +15,9 @@ export type ProductDocument = Document & {
 }
 
 enum Size {
-  small = 'Small',
-  medium = 'Medium',
-  big = 'Big',
+  small = 'Regular',
+  medium = 'Large',
+  big = 'Delux',
 }
 
 enum Quality {
@@ -26,4 +25,8 @@ enum Quality {
   silver = 'Silver',
   gold = 'Gold',
   iridium = 'Iridium',
+}
+
+export type ProductRequestFields = {
+  name: string //slug
 }

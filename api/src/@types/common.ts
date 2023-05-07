@@ -8,3 +8,7 @@ export type DeletedDocument = {
   acknowledged: boolean
   deletedCount: number
 }
+
+export type Slug = {
+  name: string
+}
