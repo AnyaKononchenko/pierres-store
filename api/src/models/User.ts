@@ -23,6 +23,11 @@ const userSchema: Schema = new Schema(
       type: String,
       default: 'default-profile.png',
     },
+    address: {
+      type: String,
+      trim: true,
+      required: true,
+    },
     isAdmin: {
       type: Boolean,
       default: false,

@@ -17,6 +17,8 @@ const prod = ENVIRONMENT === 'production' // Anything else is treated as 'dev'
 export const MONGODB_URI = process.env['MONGODB_ULR'] as string
 
 export const JWT_SECRET = process.env['JWT_TOKEN_PR_KEY'] as string
+export const JWT_ACCESS_KEY = process.env['JWT_ACCESS_KEY'] as string
+export const JWT_REFRESH_KEY = process.env['JWT_REFRESH_KEY'] as string
 
 export const SMTP_USERNAME = process.env['SMTP_USERNAME'] as string
 export const SMTP_PASSWORD = process.env['SMTP_PASSWORD'] as string

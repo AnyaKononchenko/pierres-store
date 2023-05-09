@@ -1,4 +1,3 @@
-import slugify from 'slugify'
 import jwt from 'jsonwebtoken'
 
 import User from '../models/User'
@@ -8,7 +7,7 @@ import {
   InternalServerError,
   NotFoundError,
 } from '../helpers/apiError'
-import { DeletedDocument } from '../@types/common'
+import { DeletedDocument, ObjectId } from '../@types/common'
 import { removeFile } from '../util/filer'
 import { hashPassword } from '../util/bcrypt'
 import { JWT_SECRET } from '../util/secrets'
@@ -56,15 +55,19 @@ const verify = async (token: string): Promise<UserDocument> => {
   return createdUser
 }
 
-const findBySlug = async (userName: string): Promise<UserDocument> => {
-  const foundUser = await User.findOne({
-    slug: userName.toLowerCase(),
-  })
+const findById = async (userId: ObjectId): Promise<UserDocument> => {
+  console.log('userId', userId)
+  const foundUser = await User.findById(userId)
 
   if (!foundUser) {
-    throw new NotFoundError(`User '${userName}' not found`)
+    throw new NotFoundError(`User with the ID: '${userId}' is not found`)
   }
 
+  return foundUser
+}
+
+const findByEmail = async (userEmail: string): Promise<UserDocument | null> => {
+  const foundUser = await User.findOne({ email: userEmail })
   return foundUser
 }
 
@@ -73,26 +76,22 @@ const findAll = async (): Promise<UserDocument[]> => {
 }
 
 const update = async (
-  userName: string,
+  userId: ObjectId,
   update: Partial<UserDocument>
 ): Promise<UserDocument | null> => {
   let oldImage
   if (update.image) {
-    const user = await User.findOne({ slug: userName })
+    const user = await User.findById(userId)
     oldImage = user && user.image
   }
 
-  if (update.name) {
-    update.slug = slugify(update.name.toLowerCase())
-  }
-
-  const updatedUser = await User.findOneAndUpdate({ slug: userName }, update, {
+  const updatedUser = await User.findByIdAndUpdate(userId, update, {
     new: true,
   })
 
   if (!updatedUser) {
     throw new InternalServerError(
-      `Could not update a user '${userName}'. Try again later.`
+      `Could not update a user with ID: '${userId}'. Try again later.`
     )
   }
 
@@ -103,17 +102,16 @@ const update = async (
   return updatedUser
 }
 
-const remove = async (userName: string): Promise<DeletedDocument> => {
-  const foundUser = await User.findOne({ slug: userName })
+const remove = async (userId: ObjectId): Promise<DeletedDocument> => {
+  const foundUser = await User.findById(userId)
 
-  if (!foundUser)
-    throw new NotFoundError(`A user '${userName}' does not exist.`)
+  if (!foundUser) throw new NotFoundError(`A user '${userId}' does not exist.`)
 
   const removedUser: DeletedDocument = await foundUser.deleteOne()
 
   if (removedUser.deletedCount === 0) {
     throw new InternalServerError(
-      `Could not delete a user '${userName}'. Try again later.`
+      `Could not delete a user '${userId}'. Try again later.`
     )
   }
 
@@ -125,7 +123,8 @@ const remove = async (userName: string): Promise<DeletedDocument> => {
 export default {
   signUp,
   verify,
-  findBySlug,
+  findById,
+  findByEmail,
   findAll,
   update,
   remove,

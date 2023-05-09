@@ -1,3 +1,5 @@
+import mongoose from 'mongoose'
+
 export type CustomResponse = {
   statusCode: number
   message: string
@@ -12,3 +14,5 @@ export type DeletedDocument = {
 export type Slug = {
   name: string
 }
+
+export type ObjectId = mongoose.Types.ObjectId

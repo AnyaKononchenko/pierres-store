@@ -1,14 +1,15 @@
 import { Request, Response, NextFunction } from 'express'
-import slugify from 'slugify'
 
 import User from '../models/User'
 import userService from '../services/user.service'
 import { Slug } from '../@types/common'
-import { BadRequestError } from '../helpers/apiError'
+import { BadRequestError, ForbiddenError } from '../helpers/apiError'
 import { sendResponse } from '../helpers/responseHandler'
+import { User as UserType, UserQuery, UserUpdateFields } from '../@types/user'
+import mongoose from 'mongoose'
 
 export const signUp = async (
-  req: Request<{}, {}, Slug, {}>,
+  req: Request<{}, {}, UserType, {}>,
   res: Response,
   next: NextFunction
 ) => {
@@ -17,7 +18,6 @@ export const signUp = async (
 
     const user = new User({
       ...req.body,
-      slug: slugify(req.body.name.toLowerCase()),
       image: image && image.filename,
     })
 
@@ -26,7 +26,7 @@ export const signUp = async (
     sendResponse(res, {
       statusCode: 201,
       message: `Registered a new user '${user.name}'. Please, verify your email address to finish registration.`,
-      payload: token,
+      payload: { token },
     })
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {
@@ -63,14 +63,14 @@ export const verify = async (
 
 // get all categories or provide query param as name and get one
 export const getUser = async (
-  req: Request<{}, {}, {}, Slug>,
+  req: Request<{}, {}, {}, UserQuery>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { name } = req.query
-    const foundUsers = name
-      ? await userService.findBySlug(name as string)
+    const { id } = req.query
+    const foundUsers = id
+      ? await userService.findById(id)
       : await userService.findAll()
 
     sendResponse(res, {
@@ -88,17 +88,20 @@ export const getUser = async (
 }
 
 export const updateUser = async (
-  req: Request<{}, {}, Slug, Slug>,
+  req: Request<{}, {}, UserUpdateFields, UserQuery>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { name } = req.query
+    const { id } = req.query
     const image = req.file
+    const { name, address } = req.body
 
-    const update = image ? { ...req.body, image: image.filename } : req.body
+    const update = image
+      ? { name, address, image: image.filename }
+      : { name, address }
 
-    const updatedUser = await userService.update(name as string, update)
+    const updatedUser = await userService.update(id, update)
 
     sendResponse(res, {
       statusCode: 200,
@@ -115,18 +118,44 @@ export const updateUser = async (
 }
 
 export const deleteUser = async (
-  req: Request<{}, {}, {}, Slug>,
+  req: Request<{}, {}, {}, UserQuery>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { name } = req.query
+    const { id } = req.query
 
-    await userService.remove(name)
+    await userService.remove(id)
 
     sendResponse(res, {
       statusCode: 200,
-      message: `Deleted a user '${name}'`,
+      message: `Deleted a user '${id}'`,
+    })
+  } catch (error) {
+    if (error instanceof Error && error.name == 'ValidationError') {
+      next(new BadRequestError('Invalid Request', 400, error))
+    } else {
+      next(error)
+    }
+  }
+}
+
+export const getProfile = async (
+  req: Request<{}, {}, {}, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    if (!req.user) throw new ForbiddenError()
+    console.log('req.user', req.user)
+    const id = new mongoose.Types.ObjectId(req.user as string)
+
+    const user = await userService.findById(id)
+
+    sendResponse(res, {
+      statusCode: 200,
+      message: 'Profile of the user',
+      payload: { user },
     })
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {

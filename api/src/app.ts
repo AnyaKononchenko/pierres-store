@@ -3,15 +3,15 @@ import dotenv from 'dotenv'
 import cors from 'cors'
 import bodyParser from 'body-parser'
 import morgan from 'morgan'
-// import session from 'express-session'
-// import cookieParser from 'cookie-parser'
-// import passport from 'passport'
+import cookieParser from 'cookie-parser'
+import path from 'path'
 
 import apiErrorHandler from './middlewares/apiErrorHandler'
 import apiContentType from './middlewares/apiContentType'
 import categoryRouter from './routers/category.router'
 import productRouter from './routers/product.router'
 import userRouter from './routers/user.router'
+import authRouter from './routers/auth.router'
 
 dotenv.config({ path: '.env' })
 const app = express()
@@ -22,36 +22,24 @@ app.set('port', process.env.PORT)
 // Global middleware
 app.use(
   cors({
-    origin: '*',
+    origin: 'http://localhost:3000',
+    credentials: true,
   })
 )
 // app.use(apiContentType)
-// app.use(express.json())
 app.use(morgan('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
-/** using passport also requires to ass session and cookieParser middlewares to express
- * To be activated later
 app.use(cookieParser())
-app.use(
-  session({
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: true,
-      maxAge: 60 * 60 * 24,
-    },
-    secret: 'secret',
-  })
-)
-app.use(passport.initialize())
-app.use(passport.session())
-*/
 
 // Set up routers
 app.use('/api/v1/categories', categoryRouter)
 app.use('/api/v1/products', productRouter)
 app.use('/api/v1/users', userRouter)
+app.use('/api/v1/auth', authRouter)
+
+// Make public folder accessable
+app.use('/api/media', express.static(path.join(__dirname, 'public')))
 
 // Custom API error handler
 app.use(apiErrorHandler)
