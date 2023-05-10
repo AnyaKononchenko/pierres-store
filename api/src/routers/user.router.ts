@@ -14,7 +14,7 @@ import {
   verify,
 } from '../controllers/user.controller'
 import { isUserExist } from '../middlewares/isExist'
-import verifyToken from '../middlewares/verifyToken'
+import { isAuth } from '../middlewares/authUser'
 
 const router = express.Router()
 
@@ -37,6 +37,6 @@ router.put(
   updateUser
 )
 router.delete('/', deleteUser)
-router.get('/profile', verifyToken, getProfile)
+router.get('/profile', isAuth, getProfile)
 
 export default router

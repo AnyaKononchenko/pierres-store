@@ -11,7 +11,7 @@ import ApiError, {
 import { sendResponse } from '../helpers/responseHandler'
 import { UserLogin } from '../@types/user'
 import { comparePassword } from '../util/bcrypt'
-import { JWT_ACCESS_KEY, JWT_REFRESH_KEY, JWT_SECRET } from '../util/secrets'
+import { JWT_ACCESS_KEY, JWT_REFRESH_KEY } from '../util/secrets'
 
 export const login = async (
   req: Request<{}, {}, UserLogin, {}>,
@@ -32,7 +32,7 @@ export const login = async (
     if (!isPasswordMatch) return new UnauthorizedError('Incorrect Password!')
 
     const accessToken = jwt.sign({ user: user._id }, JWT_ACCESS_KEY, {
-      expiresIn: '30s',
+      expiresIn: '5m',
     })
     // const refreshToken = jwt.sign({ user: user.email }, JWT_REFRESH_KEY, {expiresIn: "1m"})
 
@@ -44,7 +44,7 @@ export const login = async (
     sendResponse(res, {
       statusCode: 201,
       message: 'Successfully logged in.',
-      payload: { accessToken },
+      payload: { accessToken, user },
     })
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {
@@ -55,6 +55,7 @@ export const login = async (
   }
 }
 
+// TODO ?: work on it later
 // export const refresh = async (
 //   req: Request<{}, {}, UserLogin, {}>,
 //   res: Response,

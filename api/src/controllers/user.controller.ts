@@ -155,7 +155,7 @@ export const getProfile = async (
     sendResponse(res, {
       statusCode: 200,
       message: 'Profile of the user',
-      payload: { user },
+      payload: user,
     })
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {

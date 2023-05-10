@@ -2,8 +2,10 @@ import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { JWT_ACCESS_KEY } from '../util/secrets'
 import { ForbiddenError, UnauthorizedError } from '../helpers/apiError'
+import userService from '../services/user.service'
+import mongoose from 'mongoose'
 
-const verifyToken = (req: Request, res: Response, next: NextFunction) => {
+const isAuth = (req: Request, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization || req.headers.Authorization
 
@@ -15,7 +17,6 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
 
     jwt.verify(token, JWT_ACCESS_KEY, (error: any, decoded: any) => {
       if (error) throw new ForbiddenError()
-      console.log('decoded', decoded.user)
       req.user = decoded.user
       next()
     })
@@ -24,4 +25,16 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-export default verifyToken
+const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await userService.findById(
+      new mongoose.Types.ObjectId(req.user as string)
+    )
+    if (!user.isAdmin) throw new ForbiddenError()
+    next()
+  } catch (error) {
+    next(error)
+  }
+}
+
+export { isAuth, isAdmin }
