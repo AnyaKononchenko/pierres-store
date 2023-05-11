@@ -24,7 +24,7 @@ enum Season {
 enum Size {
   small = 'Regular',
   medium = 'Large',
-  big = 'Delux',
+  big = 'Deluxe',
 }
 
 enum Quality {

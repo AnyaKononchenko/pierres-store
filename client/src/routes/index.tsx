@@ -10,7 +10,7 @@ const Index = () => {
     <>
       <Router>
         <Header />
-        <main>
+        <main className="font-gothic">
           <Routes>
               <Route path='/' element={<Home />} />
             <Route element={<LoggedInRoute />}>

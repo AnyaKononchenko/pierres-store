@@ -29,7 +29,7 @@ export const login = async (
 
     const isPasswordMatch = await comparePassword(password, user.password)
 
-    if (!isPasswordMatch) return new UnauthorizedError('Incorrect Password!')
+    if (!isPasswordMatch) throw new UnauthorizedError('Incorrect Password!')
 
     const accessToken = jwt.sign({ user: user._id }, JWT_ACCESS_KEY, {
       expiresIn: '5m',
@@ -107,7 +107,7 @@ export const logout = async (
   try {
     const cookies = req.cookies
 
-    if (!cookies?.auth) return new ApiError(204, 'No Content')
+    if (!cookies?.auth) throw new ApiError(204, 'No Content')
 
     res.clearCookie('auth', { httpOnly: true })
 

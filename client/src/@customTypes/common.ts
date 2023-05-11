@@ -17,3 +17,8 @@ export type UsersResponse = {
   message: string
   payload?: UserDocument[] | null
 }
+
+export type PopUpProps = {
+  variant: "success" | "error" | "info"
+  message: string
+};
