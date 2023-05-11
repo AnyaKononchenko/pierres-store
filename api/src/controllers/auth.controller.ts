@@ -42,6 +42,7 @@ export const login = async (
     })
 
     sendResponse(res, {
+      status: 'success',
       statusCode: 201,
       message: 'Successfully logged in.',
       payload: { accessToken, user },
@@ -112,6 +113,7 @@ export const logout = async (
     res.clearCookie('auth', { httpOnly: true })
 
     sendResponse(res, {
+      status: 'success',
       statusCode: 200,
       message: 'Successfully logged out.',
       payload: {},

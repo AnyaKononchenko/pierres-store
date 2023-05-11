@@ -26,7 +26,6 @@ const userSchema: Schema = new Schema(
     address: {
       type: String,
       trim: true,
-      required: true,
     },
     isAdmin: {
       type: Boolean,

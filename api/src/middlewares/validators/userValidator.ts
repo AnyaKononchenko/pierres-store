@@ -15,6 +15,11 @@ const userValidator = () => {
       .withMessage('Password is required.')
       .isLength({ min: 6, max: 50 })
       .withMessage('Password should be 6-50 characters long.'),
+    body('address')
+      .trim()
+      .optional()
+      .isLength({ min: 2, max: 100 })
+      .withMessage('User\'s address length should be in 2-100 range.'),
   ]
 }
 

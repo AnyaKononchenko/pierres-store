@@ -4,7 +4,11 @@ import slugify from 'slugify'
 import Product from '../models/Product'
 import productService from '../services/product.service'
 import { ProductRequestFields } from '../@types/product'
-import { BadRequestError } from '../helpers/apiError'
+import {
+  BadRequestError,
+  InternalServerError,
+  NotFoundError,
+} from '../helpers/apiError'
 import { sendResponse } from '../helpers/responseHandler'
 
 export const createProduct = async (
@@ -23,6 +27,7 @@ export const createProduct = async (
     await productService.create(product)
 
     sendResponse(res, {
+      status: 'success',
       statusCode: 201,
       message: `Created a new product '${req.body.name}'`,
       payload: product,
@@ -49,6 +54,7 @@ export const getProduct = async (
       : await productService.findAll()
 
     sendResponse(res, {
+      status: 'success',
       statusCode: 200,
       message: 'Returned products',
       payload: foundProducts,
@@ -75,7 +81,14 @@ export const updateProduct = async (
 
     const updatedProduct = await productService.update(name as string, update)
 
+    if (!updatedProduct) {
+      throw new InternalServerError(
+        `Could not update a product '${name}'. Try again later.`
+      )
+    }
+
     sendResponse(res, {
+      status: 'success',
       statusCode: 200,
       message: 'Successfully updated a product',
       payload: updatedProduct,
@@ -97,9 +110,20 @@ export const deleteProduct = async (
   try {
     const { name } = req.query
 
-    await productService.remove(name)
+    const foundProduct = await Product.findOne({ slug: name })
+
+    if (!foundProduct)
+      throw new NotFoundError(`A product '${name}' does not exist.`)
+
+    const removedProduct = await productService.remove(name)
+    if (removedProduct.deletedCount === 0) {
+      throw new InternalServerError(
+        `Could not delete a product '${name}'. Try again later.`
+      )
+    }
 
     sendResponse(res, {
+      status: 'success',
       statusCode: 200,
       message: `Deleted a product '${name}'`,
     })

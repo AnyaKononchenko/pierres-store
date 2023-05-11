@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken'
 
 import User from '../models/User'
-import { UserDocument } from '../@types/user'
-import {
+import { User as UserType, UserDocument } from '../@types/user'
+import ApiError, {
   BadRequestError,
   InternalServerError,
   NotFoundError,
 } from '../helpers/apiError'
-import { DeletedDocument, ObjectId } from '../@types/common'
+import { DeletedDocument, ObjectId, Token } from '../@types/common'
 import { removeFile } from '../util/filer'
 import { hashPassword } from '../util/bcrypt'
 import { JWT_SECRET } from '../util/secrets'
@@ -15,10 +15,16 @@ import { Email } from '../@types/mailer'
 import sendEmail from '../util/mailer'
 
 const signUp = async (user: UserDocument): Promise<string> => {
-  const { name, email, password, image } = user
+  const { name, email, password, image, address } = user
   const hashedPassword = await hashPassword(password)
   const token = jwt.sign(
-    { name, email, password: hashedPassword, image: image && image },
+    {
+      name,
+      email,
+      password: hashedPassword,
+      image: image && image,
+      address: address && address,
+    },
     JWT_SECRET,
     { expiresIn: '10m' }
   )
@@ -36,39 +42,16 @@ const signUp = async (user: UserDocument): Promise<string> => {
   return token
 }
 
-const verify = async (token: string): Promise<UserDocument> => {
-  const decoded = await jwt.verify(
-    token,
-    JWT_SECRET,
-    async (error, decoded) => {
-      if (error) {
-        throw new BadRequestError('Token has expired.')
-      }
-      return decoded
-    }
-  )
-
-  const createdUser = await User.create(decoded)
-
-  if (!createdUser) throw new InternalServerError()
-
-  return createdUser
+const verify = async (user: Token): Promise<UserDocument | null> => {
+  return await User.create(user)
 }
 
-const findById = async (userId: ObjectId): Promise<UserDocument> => {
-  console.log('userId', userId)
-  const foundUser = await User.findById(userId)
-
-  if (!foundUser) {
-    throw new NotFoundError(`User with the ID: '${userId}' is not found`)
-  }
-
-  return foundUser
+const findById = async (userId: ObjectId): Promise<UserDocument | null> => {
+  return await User.findById(userId)
 }
 
 const findByEmail = async (userEmail: string): Promise<UserDocument | null> => {
-  const foundUser = await User.findOne({ email: userEmail })
-  return foundUser
+  return await User.findOne({ email: userEmail })
 }
 
 const findAll = async (): Promise<UserDocument[]> => {
@@ -89,14 +72,8 @@ const update = async (
     new: true,
   })
 
-  if (!updatedUser) {
-    throw new InternalServerError(
-      `Could not update a user with ID: '${userId}'. Try again later.`
-    )
-  }
-
-  if (oldImage) {
-    removeFile(`images/users/${oldImage}`)
+  if (updatedUser) {
+    oldImage && removeFile(`images/users/${oldImage}`)
   }
 
   return updatedUser
@@ -105,17 +82,13 @@ const update = async (
 const remove = async (userId: ObjectId): Promise<DeletedDocument> => {
   const foundUser = await User.findById(userId)
 
-  if (!foundUser) throw new NotFoundError(`A user '${userId}' does not exist.`)
+  const removedUser: DeletedDocument = foundUser
+    ? await foundUser.deleteOne()
+    : null
 
-  const removedUser: DeletedDocument = await foundUser.deleteOne()
-
-  if (removedUser.deletedCount === 0) {
-    throw new InternalServerError(
-      `Could not delete a user '${userId}'. Try again later.`
-    )
+  if (removedUser) {
+    foundUser && removeFile(`images/users/${foundUser.image}`)
   }
-
-  removeFile(`images/users/${foundUser.image}`)
 
   return removedUser
 }

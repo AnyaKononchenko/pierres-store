@@ -49,14 +49,10 @@ const update = async (
     { new: true }
   )
 
-  if (!updatedProduct) {
-    throw new InternalServerError(
-      `Could not update a product '${productName}'. Try again later.`
-    )
-  }
-
-  if (oldImage) {
-    removeFile(`images/products/${oldImage}`)
+  if (updatedProduct) {
+    if (oldImage) {
+      removeFile(`images/products/${oldImage}`)
+    }
   }
 
   return updatedProduct
@@ -65,18 +61,13 @@ const update = async (
 const remove = async (productName: string): Promise<DeletedDocument> => {
   const foundProduct = await Product.findOne({ slug: productName })
 
-  if (!foundProduct)
-    throw new NotFoundError(`A product '${productName}' does not exist.`)
+  const removedProduct: DeletedDocument = foundProduct
+    ? await foundProduct.deleteOne()
+    : null
 
-  const removedProduct: DeletedDocument = await foundProduct.deleteOne()
-
-  if (removedProduct.deletedCount === 0) {
-    throw new InternalServerError(
-      `Could not delete a product '${productName}'. Try again later.`
-    )
+  if (removedProduct) {
+    foundProduct && removeFile(`images/products/${foundProduct.image}`)
   }
-
-  removeFile(`images/products/${foundProduct.image}`)
 
   return removedProduct
 }

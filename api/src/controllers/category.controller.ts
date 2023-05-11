@@ -23,6 +23,7 @@ export const createCategory: RequestHandler = async (
     await categoryService.create(category)
 
     sendResponse(res, {
+      status: 'success',
       statusCode: 201,
       message: `Created a new category "${name}"`,
       payload: category,
@@ -49,6 +50,7 @@ export const getCategory: RequestHandler = async (
       : await categoryService.findAll()
 
     sendResponse(res, {
+      status: 'success',
       statusCode: 200,
       message: 'Returned categories',
       payload: foundCategories,
@@ -74,6 +76,7 @@ export const updateCategory: RequestHandler = async (
     const updatedCategory = await categoryService.update(name as string, update)
 
     sendResponse(res, {
+      status: 'success',
       statusCode: 200,
       message: 'Successfully updated a category',
       payload: updatedCategory,
@@ -99,6 +102,7 @@ export const deleteCategory: RequestHandler = async (
     await categoryService.remove(name)
 
     sendResponse(res, {
+      status: 'success',
       statusCode: 200,
       message: `Deleted a category '${name}'`,
     })

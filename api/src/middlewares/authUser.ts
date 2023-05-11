@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { JWT_ACCESS_KEY } from '../util/secrets'
-import { ForbiddenError, UnauthorizedError } from '../helpers/apiError'
+import {
+  BadRequestError,
+  ForbiddenError,
+  UnauthorizedError,
+} from '../helpers/apiError'
 import userService from '../services/user.service'
 import mongoose from 'mongoose'
 
@@ -30,6 +34,7 @@ const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
     const user = await userService.findById(
       new mongoose.Types.ObjectId(req.user as string)
     )
+    if (!user) throw new BadRequestError('Such user does not exist.')
     if (!user.isAdmin) throw new ForbiddenError()
     next()
   } catch (error) {

@@ -2,21 +2,32 @@ import { ProductType } from "./products"
 import { UserDocument } from "./users"
 
 export type ProductResponse = {
-  status: number
+  status: "error" | "success"
+  statusCode: number
   message: string
   payload?: ProductType | ProductType[] | null
 }
 
 export type UserResponse = {
-  status: number
+  status: "error" | "success"
+  statusCode: number
   message: string
   payload?: UserDocument | null
 }
 export type UsersResponse = {
-  status: number
+  status: "error" | "success"
+  statusCode: number
   message: string
   payload?: UserDocument[] | null
 }
+
+export type CommonResponse = {
+  status: string
+  statusCode: number
+  message: string
+  payload?: object | object[] | null
+}
+
 
 export type PopUpProps = {
   variant: "success" | "error" | "info"

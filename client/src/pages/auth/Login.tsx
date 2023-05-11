@@ -1,13 +1,16 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { Helmet } from "react-helmet";
 import { ToastContainer, toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 import { Login as LoginState } from "@customTypes/users";
-import { login as loginService } from "services/authService";
+// import { login as loginService } from "services/authService";
 import { useAppDispatch } from "redux/hooks";
 import { login } from "../../features/userSlice";
 import { Loading } from "components";
+import { CommonResponse } from "@customTypes/common";
+const BASE_URL = "http://localhost:3002/api/v1";
 
 const Login = () => {
   const dispatch = useAppDispatch();
@@ -26,15 +29,27 @@ const Login = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setLoading(true);
-    const response = await loginService(loginData);
-    console.log("LOGIN", response);
-    if (!response.payload) {
-      setLoading(false);
-      toast.error(response.response.data.message)
-      return;
-    }
-    dispatch(login(response.payload));
+
+    await axios
+      .post<CommonResponse>(`${BASE_URL}/auth/login`, loginData)
+      .then((response) => {
+        dispatch(login(response.data.payload));
+        return response.data;
+      })
+      .catch((error) => {
+        if (error.response) {
+          toast.error(error.response.data.message);
+        }
+      });
     setLoading(false);
+    // const response = await loginService(loginData);
+    // if (response.status === "error") {
+    //   setLoading(false);
+    //   toast.error(response.message);
+    //   return;
+    // }
+    // dispatch(login(response.payload));
+    // setLoading(false);
   };
 
   return (
