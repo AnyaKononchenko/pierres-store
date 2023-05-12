@@ -4,7 +4,7 @@ import { AiOutlineClose, AiOutlineMenu, AiOutlineLogout } from "react-icons/ai";
 import { BiUserCircle } from "react-icons/bi";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { logout, selectIsLoggedIn } from "features/userSlice";
+import { logoutUser, selectIsLoggedIn } from "features/userSlice";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -12,13 +12,14 @@ const Navbar = () => {
 
   const [navOpen, setNavOpen] = useState<boolean>(false);
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  console.log('is logged in', isLoggedIn)
 
   const handleNavOpen = () => {
     setNavOpen(!navOpen);
   };
 
   const handleLogout = () => {
-    dispatch(logout());
+    dispatch(logoutUser());
     navigate("/login");
   };
 

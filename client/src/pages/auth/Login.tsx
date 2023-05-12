@@ -6,15 +6,14 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { Login as LoginState } from "@customTypes/users";
 // import { login as loginService } from "services/authService";
-import { useAppDispatch } from "redux/hooks";
-import { login } from "../../features/userSlice";
+import { useAppDispatch, useAppSelector } from "redux/hooks";
+import { loginUser, selectError, selectPending } from "../../features/userSlice";
 import { Loading } from "components";
-import { CommonResponse } from "@customTypes/common";
-const BASE_URL = "http://localhost:3002/api/v1";
 
 const Login = () => {
   const dispatch = useAppDispatch();
-  const [loading, setLoading] = useState(false);
+  const pending = useAppSelector(selectPending);
+  const error = useAppSelector(selectError);
 
   const [loginData, setLoginData] = useState<LoginState>({
     email: "",
@@ -28,28 +27,10 @@ const Login = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setLoading(true);
-
-    await axios
-      .post<CommonResponse>(`${BASE_URL}/auth/login`, loginData)
-      .then((response) => {
-        dispatch(login(response.data.payload));
-        return response.data;
-      })
-      .catch((error) => {
-        if (error.response) {
-          toast.error(error.response.data.message);
-        }
-      });
-    setLoading(false);
-    // const response = await loginService(loginData);
-    // if (response.status === "error") {
-    //   setLoading(false);
-    //   toast.error(response.message);
-    //   return;
-    // }
-    // dispatch(login(response.payload));
-    // setLoading(false);
+    dispatch(loginUser(loginData));
+    if(error) {
+      toast.error(error)
+    }
   };
 
   return (
@@ -57,7 +38,7 @@ const Login = () => {
       <Helmet>
         <title>Login To Pierre's</title>
       </Helmet>
-      {loading && <Loading />}
+      {pending && <Loading />}
       <div className='max-w-[40rem] my-16 mx-auto text-[1.2rem]'>
         <h1 className='font-bold text-[1.8rem] text-center mb-6'>
           Login to expore Pierre's!
