@@ -9,12 +9,13 @@ import {
 import {
   deleteUser,
   getProfile,
+  getUser,
   signUp,
   updateUser,
   verify,
 } from '../controllers/user.controller'
 import { isUserExist } from '../middlewares/isExist'
-import { isAuth } from '../middlewares/authUser'
+import { isAdmin, isAuth } from '../middlewares/authUser'
 
 const router = express.Router()
 
@@ -38,5 +39,6 @@ router.put(
 )
 router.delete('/', deleteUser)
 router.get('/profile', isAuth, getProfile)
+router.get('/', isAuth, isAdmin, getUser as any)
 
 export default router

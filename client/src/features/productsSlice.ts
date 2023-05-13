@@ -2,13 +2,15 @@
 import { RootState } from '../redux/store';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { ProductsSlice } from '@customTypes/products';
+import { ProductType } from '@customTypes/products';
 
-const initialState: ProductsSlice = {
-  pending: false,
-  error: "",
-  products: []
+const emptyError: CommonResponse = {
+  status: "",
+  statusCode: 0,
+  message: "",
 }
+
+const initialState: { products: ProductType[], pending: boolean, error: CommonResponse } = { products: [], pending: false, error: emptyError }
 
 export const getProducts = createAsyncThunk(
   'products/getProducts',
@@ -17,7 +19,7 @@ export const getProducts = createAsyncThunk(
       const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/products`)
       return response.data
     } catch (error) {
-      return rejectWithValue(error.response.data.message);
+      return rejectWithValue(error.response.data);
     }
   }
 )
@@ -29,7 +31,7 @@ export const productsSlice = createSlice({
     
   },
   extraReducers: (builder) => {
-    // log in
+    // get products
     builder.addCase(getProducts.pending, (state) => {
       state.pending = true;
     })

@@ -1,9 +1,14 @@
-import React from 'react'
+import React from "react";
+import { Outlet } from "react-router-dom";
+
+import { useAppSelector } from "redux/hooks";
+import { selectUser } from "features/authSlice";
+import { Error } from "pages";
 
 const AdminRoute = () => {
-  return (
-    <div>AdminRoute</div>
-  )
-}
+  const { isAdmin } = useAppSelector(selectUser);
 
-export default AdminRoute
+  return isAdmin ? <Outlet /> : <Error message="Forbidden!" />;
+};
+
+export default AdminRoute;

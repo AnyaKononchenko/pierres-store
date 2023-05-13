@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -19,7 +19,7 @@ import { Loading } from "components";
 const Profile = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { accessToken } = useAppSelector(selectLoggedInUser);
+  const { accessToken, isAdmin } = useAppSelector(selectLoggedInUser);
   const user = useAppSelector(selectUser);
   const error = useAppSelector(selectError);
   const pending = useAppSelector(selectPending);
@@ -42,6 +42,7 @@ const Profile = () => {
           <img src={`${process.env.REACT_APP_BASE_URL}/media/images/users/${user.image}`} alt={user.name} className='bg-zinc-400 mx-auto'/>
         </div>
 
+        {isAdmin && <Link to='/dashboard'>Dashboard</Link>}
         <ToastContainer
           position='top-right'
           autoClose={5000}

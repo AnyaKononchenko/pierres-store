@@ -20,7 +20,13 @@ const emptyUser: UserDocument = {
   accessToken: "",
 }
 
-const initialState : {user: UserDocument, pending: false, error: CommonResponse} = { user: emptyUser, pending: false, error: {} }
+const emptyError: CommonResponse = {
+  status: "",
+  statusCode: 0,
+  message: "",
+}
+
+const initialState : {user: UserDocument, users: UserDocument[], pending: false, error: CommonResponse} = { user: emptyUser, pending: false, error: emptyError }
 
 export const getProfile = createAsyncThunk(
   'user/getProfile',
@@ -32,6 +38,24 @@ export const getProfile = createAsyncThunk(
         }
       }
       const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users/profile`, config)
+      return response.data
+    } catch (error) {
+      console.log(error.response.data)
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
+export const getUsers = createAsyncThunk(
+  'user/getUsers',
+  async (token: string, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      }
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users`, config)
       return response.data
     } catch (error) {
       console.log(error.response.data)
@@ -60,10 +84,25 @@ export const userSlice = createSlice({
       state.user = emptyUser
       state.error = action.payload
     })
+    // get users
+    builder.addCase(getUsers.pending, (state) => {
+      state.pending = true
+    })
+    builder.addCase(getUsers.fulfilled, (state, action) => {
+      state.users = action.payload.payload
+      state.pending = false
+      state.error = emptyError
+    })
+    builder.addCase(getUsers.rejected, (state, action) => {
+      state.pending = false
+      state.users = []
+      state.error = action.payload
+    })
   },
 })
 
 export const selectUser = (state: RootState) => state.user.user;
+export const selectUsers = (state: RootState) => state.user.users;
 export const selectError = (state: RootState) => state.user.error;
 export const selectPending = (state: RootState) => state.user.pending;
 

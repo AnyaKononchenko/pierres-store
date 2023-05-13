@@ -85,7 +85,7 @@ export const verify = async (
   }
 }
 
-// get all categories or provide query param as name and get one
+// get all users or provide query param as name and get one
 export const getUser = async (
   req: Request<{}, {}, {}, UserQuery>,
   res: Response,

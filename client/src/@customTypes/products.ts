@@ -12,27 +12,22 @@ export type ProductType = {
   color?: string
 }
 
-enum Season {
+export enum Season {
   spring = 'Spring',
   summer = 'Summer',
   fall = 'Fall',
   winter = 'Winter',
 }
-enum Size {
+
+export enum Size {
   small = 'Regular',
   medium = 'Large',
   big = 'Delux',
 }
 
-enum Quality {
+export enum Quality {
   regular = 'Regular',
   silver = 'Silver',
   gold = 'Gold',
   iridium = 'Iridium',
-}
-
-export type ProductsSlice = {
-  pending: boolean
-  error: string
-  products: ProductType[]
 }
