@@ -3,50 +3,39 @@ import { RootState } from '../redux/store';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { Login, UserLocal } from '@customTypes/users';
+import { UserDocument } from '@customTypes/users';
+import { CommonResponse } from '@customTypes/common';
 
-const BASE_URL = "http://localhost:3002/api/v1";
-
-const emptyUser: UserLocal = {
+const emptyUser: UserDocument = {
+  _id: "",
   name: "",
+  email: "",
+  password: "",
+  address: "",
   image: "",
-  accessToken: "",
   isAdmin: false,
+  isBanned: false,
+  createdAt: "",
+  updatedAt: "",
+  accessToken: "",
 }
 
-const userInfo: { isLoggedIn: boolean, user: UserLocal } =
-  localStorage.getItem("userInfo") !== null
-    ? {
-      isLoggedIn: true,
-      user: JSON.parse(String(localStorage.getItem("userInfo")))
-    }
-    : {
-      isLoggedIn: false,
-      user: emptyUser,
-    }
+const initialState : {user: UserDocument, pending: false, error: CommonResponse} = { user: emptyUser, pending: false, error: {} }
 
-const initialState = { userInfo, pending: false, error: '' }
-
-export const loginUser = createAsyncThunk(
-  'user/login',
-  async (credentials: Login, { rejectWithValue }) => {
+export const getProfile = createAsyncThunk(
+  'user/getProfile',
+  async (token: string, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${BASE_URL}/auth/login`, credentials)
+      const config = {
+        headers: {
+          authorization: `Bearer ${token}`
+        }
+      }
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users/profile`, config)
       return response.data
     } catch (error) {
-      return rejectWithValue(error.response.data.message);
-    }
-  }
-)
-
-export const logoutUser = createAsyncThunk(
-  'user/logout',
-  async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/auth/logout`) 
-      return response.data
-    } catch (error) {
-      return rejectWithValue(error.response.data.message);
+      console.log(error.response.data)
+      return rejectWithValue(error.response.data);
     }
   }
 )
@@ -55,58 +44,26 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    // login: (state, action) => {
-    //   const { accessToken, user: { name, image, isAdmin } } = action.payload;
-    //   state.user = { name, image, isAdmin, accessToken }
-    //   state.isLoggedIn = true
-    //   localStorage.setItem('userInfo', JSON.stringify(state.user))
-    // },
-    // logout: (state) => {
-    //   localStorage.removeItem("userInfo");
-    //   return state = {
-    //     isLoggedIn: false,
-    //     user: emptyUser,
-    //   }
-    // },
   },
   extraReducers: (builder) => {
-    // log in
-    builder.addCase(loginUser.pending, (state) => {
-      state.pending = true;
+    // get profile
+    builder.addCase(getProfile.pending, (state) => {
+      state.pending = true
     })
-    builder.addCase(loginUser.fulfilled, (state, action) => {
-      const { accessToken, user: { name, image, isAdmin } } = action.payload.payload
-      state.userInfo = { isLoggedIn: true, user: { name, image, isAdmin, accessToken } }
-      localStorage.setItem('userInfo', JSON.stringify(state.userInfo.user))
-      state.pending = false;
-      state.error = '';
+    builder.addCase(getProfile.fulfilled, (state, action) => {
+      state.user = action.payload.payload
+      state.pending = false
+      state.error = ''
     })
-    builder.addCase(loginUser.rejected, (state, action) => {
-      state.pending = false;
+    builder.addCase(getProfile.rejected, (state, action) => {
+      state.pending = false
+      state.user = emptyUser
       state.error = action.payload
-    })
-    // log out
-    builder.addCase(logoutUser.pending, (state) => {
-      state.pending = true;
-    })
-    builder.addCase(logoutUser.fulfilled, (state) => {
-      localStorage.removeItem("userInfo");
-      console.log("local storage", localStorage.getItem("userInfo"))
-      state.userInfo = { isLoggedIn: false, user: emptyUser }
-      state.pending = false;
-      state.error = '';
-    })
-    builder.addCase(logoutUser.rejected, (state, action) => {
-      state.pending = false;
-      state.error = action.error.message ? action.error.message : "Error happened while trying to log in. Please, try again later."
     })
   },
 })
 
-// export const { login, logout } = userSlice.actions;
-
-export const selectIsLoggedIn = (state: RootState) => state.user.userInfo.isLoggedIn;
-export const selectUser = (state: RootState) => state.user.userInfo.user;
+export const selectUser = (state: RootState) => state.user.user;
 export const selectError = (state: RootState) => state.user.error;
 export const selectPending = (state: RootState) => state.user.pending;
 

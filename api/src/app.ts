@@ -39,7 +39,7 @@ app.use('/api/v1/users', userRouter)
 app.use('/api/v1/auth', authRouter)
 
 // Make public folder accessable
-app.use('/api/media', express.static(path.join(__dirname, 'public')))
+app.use('/api/v1/media', express.static(path.join(__dirname, 'public')))
 
 // Custom API error handler
 app.use(apiErrorHandler)

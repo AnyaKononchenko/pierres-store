@@ -30,3 +30,9 @@ enum Quality {
   gold = 'Gold',
   iridium = 'Iridium',
 }
+
+export type ProductsSlice = {
+  pending: boolean
+  error: string
+  products: ProductType[]
+}

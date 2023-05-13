@@ -1,16 +1,20 @@
-import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { Login as LoginState } from "@customTypes/users";
-// import { login as loginService } from "services/authService";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { loginUser, selectError, selectPending } from "../../features/userSlice";
+import {
+  loginUser,
+  selectError,
+  selectPending,
+} from "../../features/authSlice";
 import { Loading } from "components";
 
 const Login = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const pending = useAppSelector(selectPending);
   const error = useAppSelector(selectError);
@@ -28,10 +32,12 @@ const Login = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     dispatch(loginUser(loginData));
-    if(error) {
-      toast.error(error)
-    }
+    navigate('/profile')
   };
+
+  useEffect(() => {
+    error && error.message.length > 0 && toast.error(error.message)
+  }, [error, dispatch])
 
   return (
     <div>

@@ -1,30 +1,62 @@
-import { UserDocument } from '@customTypes/users'
-import { selectUser } from 'features/userSlice'
-import React, { useState, useEffect } from 'react'
-import { useAppSelector } from 'redux/hooks'
-import { getProfile } from 'services/userService'
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { useAppDispatch, useAppSelector } from "redux/hooks";
+import {
+  logoutUser,
+  selectUser as selectLoggedInUser,
+} from "features/authSlice";
+import {
+  selectError,
+  selectPending,
+  selectUser,
+  getProfile,
+} from "features/userSlice";
+import { Loading } from "components";
 
 const Profile = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const { accessToken } = useAppSelector(selectLoggedInUser);
   const user = useAppSelector(selectUser);
-  const [userData, setUserData] = useState<UserDocument>({} as UserDocument)
-  
-  const loadProfile = async () => {
-    try {
-      const response =  await getProfile(user.accessToken);
-      setUserData(response?.payload ? response?.payload : {} as UserDocument)
-    } catch (error) {
-      alert(error)
-    }
-  }
+  const error = useAppSelector(selectError);
+  const pending = useAppSelector(selectPending);
 
   useEffect(() => {
-    loadProfile()
-    console.log("user data", userData && userData)
-  }, [])
-  
-  return (
-    <div>Profile of the {userData.name}</div>
-  )
-}
+    dispatch(getProfile(accessToken));
+    if (error.message && error.message.length > 0) {
+      console.log("error", error);
+      dispatch(logoutUser());
+      // navigate("/login");
+    }
+  }, [accessToken, error, dispatch, navigate]);
 
-export default Profile
+  return (
+    <>
+      {pending && <Loading />}
+      <div className='flex flex-col max-w-[50vw] mx-auto'>
+        <div>
+          <h2 className='font-bold text-[2rem] text-center'>{user.name}</h2>
+          <img src={`${process.env.REACT_APP_BASE_URL}/media/images/users/${user.image}`} alt={user.name} className='bg-zinc-400 mx-auto'/>
+        </div>
+
+        <ToastContainer
+          position='top-right'
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme='dark'
+        />
+      </div>
+    </>
+  );
+};
+
+export default Profile;

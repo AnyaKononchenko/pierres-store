@@ -32,7 +32,7 @@ export const login = async (
     if (!isPasswordMatch) throw new UnauthorizedError('Incorrect Password!')
 
     const accessToken = jwt.sign({ user: user._id }, JWT_ACCESS_KEY, {
-      expiresIn: '5m',
+      expiresIn: '60m',
     })
     // const refreshToken = jwt.sign({ user: user.email }, JWT_REFRESH_KEY, {expiresIn: "1m"})
 

@@ -14,13 +14,13 @@ const isAuth = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization || req.headers.Authorization
 
     if (!req.headers.authorization?.startsWith('Bearer ')) {
-      throw new UnauthorizedError()
+      throw new UnauthorizedError('Please, log in to continue.')
     }
 
     const token = req.headers.authorization.split(' ')[1]
 
     jwt.verify(token, JWT_ACCESS_KEY, (error: any, decoded: any) => {
-      if (error) throw new ForbiddenError()
+      if (error) throw new ForbiddenError('Please, log in to continue.')
       req.user = decoded.user
       next()
     })

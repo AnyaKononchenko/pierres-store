@@ -4,7 +4,7 @@ export type UserDocument = {
   email: string
   password: string
   address: string
-  image?: string
+  image: string
   isAdmin?: boolean
   isBanned?: boolean
   createdAt: string
