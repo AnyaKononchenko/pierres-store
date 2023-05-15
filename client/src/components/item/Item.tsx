@@ -1,21 +1,29 @@
 import React, { useState } from "react";
-import { CategoryDocument } from "@customTypes/categories";
-import { ProductType } from "@customTypes/products";
-import { UserDocument } from "@customTypes/users";
+
 import { FaRegEdit } from "react-icons/fa";
 import { RiDeleteBinFill } from "react-icons/ri";
 import {
   TbLayoutBottombarCollapse,
   TbLayoutNavbarCollapse,
 } from "react-icons/tb";
+
+import { CategoryDocument } from "@customTypes/categories";
+import { ProductDocument } from "@customTypes/products";
+import { UserDocument } from "@customTypes/users";
 import ExpandUser from "./expand/ExpandUser";
 import ExpandProduct from "./expand/ExpandProduct";
 import ExpandCategory from "./expand/ExpandCategory";
 
+import { ItemType } from "@customTypes/common";
+
 const Item = ({
   item,
+  onDelete,
+  onUpdate,
 }: {
-  item: CategoryDocument | UserDocument | ProductType;
+  item: CategoryDocument | UserDocument | ProductDocument;
+  onDelete: (item: ItemType) => void;
+  onUpdate: (item: ItemType) => void;
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
 
@@ -24,7 +32,6 @@ const Item = ({
   };
 
   const ExpandContent = () => {
-    console.log("item", item);
     if ("isAdmin" in item) {
       return <ExpandUser user={item} />;
     } else if ("price" in item) {
@@ -34,9 +41,13 @@ const Item = ({
     }
   };
 
-  const handleDelete = () => {};
+  const handleDelete = (item: ItemType) => {
+    onDelete(item);
+  };
 
-  const handleEdit = () => {};
+  const handleEdit = (item: ItemType) => {
+    onUpdate(item);
+  };
 
   return (
     <>
@@ -48,10 +59,10 @@ const Item = ({
                 "price" in item ? "products" : "users"
               }/${item.image}`}
               alt={item.name}
-              className='w-[10%] h-[80%] h-3'
+              className='w-[3.5rem] h-[3.5rem]'
             />
           ) : (
-            <div className='w-[3.5rem] h-[3.5rem] bg-[#EBDD77] h-3 border-2 border-zinc-400 rounded-md p-2'>
+            <div className='w-[3.5rem] h-[3.5rem] bg-[#EBDD77] border-2 border-zinc-400 rounded-md p-2'>
               <p
                 className='w-full h-full font-bold text-[1.3rem] text-center'
                 aria-label='Item icon'
@@ -66,13 +77,13 @@ const Item = ({
             size={25}
             aria-label='Edit item'
             className='hover:cursor-pointer'
-            onClick={handleEdit}
+            onClick={() => handleEdit(item)}
           />
           <RiDeleteBinFill
             size={25}
             aria-label='Delete item'
             className='hover:cursor-pointer'
-            onClick={handleDelete}
+            onClick={() => handleDelete(item)}
           />
           {!isExpanded ? (
             <TbLayoutBottombarCollapse

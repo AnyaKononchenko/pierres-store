@@ -4,7 +4,7 @@ import { AiOutlineClose, AiOutlineMenu, AiOutlineLogout } from "react-icons/ai";
 import { BiUserCircle } from "react-icons/bi";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { logoutUser, selectIsLoggedIn } from "features/authSlice";
+import { logoutUser, selectIsLoggedIn, selectUser } from "features/authSlice";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -12,6 +12,7 @@ const Navbar = () => {
 
   const [navOpen, setNavOpen] = useState<boolean>(false);
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
+  const user = useAppSelector(selectUser);
 
   const handleNavOpen = () => {
     setNavOpen(!navOpen);
@@ -19,7 +20,10 @@ const Navbar = () => {
 
   const handleLogout = () => {
     dispatch(logoutUser());
-    navigate("/login");
+
+    setTimeout(() => {
+      navigate("/");
+    }, 100)
   };
 
   return (
@@ -40,6 +44,11 @@ const Navbar = () => {
         <li className='p-4'>
           <Link to='/cart'>Partners</Link>
         </li>
+        {user.isAdmin && (
+          <li className='p-4'>
+            <Link to='/dashboard'>Dashboard</Link>
+          </li>
+        )}
       </ul>
 
       {isLoggedIn ? (
@@ -73,20 +82,37 @@ const Navbar = () => {
       >
         <ul className='flex flex-col pt-24 uppercase '>
           <li className='p-4'>
-            <Link to='/'>Home</Link>
+            <Link to='/' onClick={() => handleNavOpen()}>
+              Home
+            </Link>
           </li>
           <li className='p-4'>
-            <Link to='/store'>Store</Link>
+            <Link to='/store' onClick={() => handleNavOpen()}>
+              Store
+            </Link>
           </li>
           <li className='p-4'>
-            <Link to='/profile'>Profile</Link>
+            <Link to='/profile' onClick={() => handleNavOpen()}>
+              Profile
+            </Link>
           </li>
           <li className='p-4'>
-            <Link to='/cart'>Cart</Link>
+            <Link to='/cart' onClick={() => handleNavOpen()}>
+              Cart
+            </Link>
           </li>
           <li className='p-4'>
-            <Link to='/cart'>Partners</Link>
+            <Link to='/cart' onClick={() => handleNavOpen()}>
+              Partners
+            </Link>
           </li>
+          {user.isAdmin && (
+            <li className='p-4'>
+              <Link to='/dashboard' onClick={() => handleNavOpen()}>
+                Dashboard
+              </Link>
+            </li>
+          )}
         </ul>
       </div>
     </nav>

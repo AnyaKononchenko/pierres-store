@@ -49,7 +49,7 @@ const productValidator = () => {
       .trim()
       .optional()
       .isIn(['Regular', 'Large', 'Deluxe'])
-      .withMessage('Size can be Small, Medium or Big'),
+      .withMessage('Size can be Regular, Large or Deluxe'),
     body('color')
       .trim()
       .optional()

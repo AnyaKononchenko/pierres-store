@@ -1,7 +1,7 @@
-import { ProductType } from "@customTypes/products";
+import { ProductDocument } from "@customTypes/products";
 import React from "react";
 
-const ExpandProduct = ({ product }: { product: ProductType }) => {
+const ExpandProduct = ({ product }: { product: ProductDocument }) => {
   
   return (
     <div className="flex flex-col w-full">

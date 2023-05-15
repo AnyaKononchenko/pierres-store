@@ -1,9 +1,9 @@
 import React from "react";
 
 import Product from "./Product";
-import { ProductType } from "@customTypes/products";
+import { ProductDocument } from "@customTypes/products";
 
-const ProductList = ({ products }: { products: ProductType[] }) => {
+const ProductList = ({ products }: { products: ProductDocument[] }) => {
   
   return (
     <section className='grid grid-col-4 gap-4 max-w-[60vw]'>

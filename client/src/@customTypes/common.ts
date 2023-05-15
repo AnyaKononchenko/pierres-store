@@ -1,11 +1,12 @@
-import { ProductType } from "./products"
+import { CategoryDocument } from "./categories"
+import { ProductDocument } from "./products"
 import { UserDocument } from "./users"
 
 export type ProductResponse = {
   status: "error" | "success"
   statusCode: number
   message: string
-  payload?: ProductType | ProductType[] | null
+  payload?: ProductDocument | ProductDocument[] | null
 }
 
 export type UserResponse = {
@@ -33,3 +34,6 @@ export type PopUpProps = {
   variant: "success" | "error" | "info"
   message: string
 };
+
+
+export type ItemType = UserDocument | ProductDocument | CategoryDocument;

@@ -1,6 +1,7 @@
-export type ProductType = {
+export type ProductDocument = {
   name: string
-  image: string
+  slug?:string
+  image?: File
   description: string
   price: number
   inStock: number
@@ -20,9 +21,9 @@ export enum Season {
 }
 
 export enum Size {
-  small = 'Regular',
-  medium = 'Large',
-  big = 'Delux',
+  regular = 'Regular',
+  large = 'Large',
+  deluxe = 'Deluxe',
 }
 
 export enum Quality {

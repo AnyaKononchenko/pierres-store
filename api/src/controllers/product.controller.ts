@@ -18,7 +18,6 @@ export const createProduct = async (
 ) => {
   try {
     const image = req.file
-
     const product = new Product({
       ...req.body,
       slug: slugify(req.body.name.toLowerCase()),

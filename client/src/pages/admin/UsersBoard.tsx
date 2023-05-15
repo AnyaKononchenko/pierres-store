@@ -31,7 +31,7 @@ const UsersBoard = () => {
     <div className='flex flex-col justify-around items-center p-3 lg:max-w-[70vw] mx-auto'>
       <h2 className='font-bold text-[1.5rem]'>Users</h2>
       {pending && <Loading />}
-      <ItemsList items={users} />
+      {/* <ItemsList items={users} /> */}
 
       <ToastContainer
         position='top-right'

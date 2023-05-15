@@ -20,7 +20,9 @@ const isAuth = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers.authorization.split(' ')[1]
 
     jwt.verify(token, JWT_ACCESS_KEY, (error: any, decoded: any) => {
-      if (error) throw new ForbiddenError('Please, log in to continue.')
+      if (error) {
+        throw new ForbiddenError('Please, log in to continue.')
+      }
       req.user = decoded.user
       next()
     })
@@ -35,7 +37,7 @@ const isAdmin = async (req: Request, res: Response, next: NextFunction) => {
       new mongoose.Types.ObjectId(req.user as string)
     )
     if (!user) throw new BadRequestError('Such user does not exist.')
-    if (!user.isAdmin) throw new ForbiddenError()
+    if (!user.isAdmin) throw new ForbiddenError('Not an admin.')
     next()
   } catch (error) {
     next(error)
