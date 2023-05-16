@@ -1,22 +1,30 @@
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { TbPlus } from "react-icons/tb";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import {
+  deleteCategory,
   getCategories,
   selectCategories,
   selectError,
+  selectMessage,
   selectPending,
 } from "features/categoriesSlice";
 import { ItemsList, Loading } from "components";
 import { ItemType } from "@customTypes/common";
+import { selectUser } from "features/authSlice";
 
 const CategoriesBoard = () => {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const pending = useAppSelector(selectPending);
   const error = useAppSelector(selectError);
   const categories = useAppSelector(selectCategories);
+  const message = useAppSelector(selectMessage)
+  const { accessToken } = useAppSelector(selectUser);
 
   useEffect(() => {
     dispatch(getCategories());
@@ -25,18 +33,35 @@ const CategoriesBoard = () => {
       toast.error(error.message);
       // navigate("/login");
     }
-  }, [dispatch, error]);
+  }, [dispatch, error, message]);
+
+  const handleAddCategory = () => {
+    navigate("/create-category");
+  };
 
   const handleDelete = (item: ItemType) => {
-    console.log(item)
-    // dispatch(deleteCategory({slug: "slug" in item ? item.slug : "", token: accessToken}))
-  }
+    dispatch(
+      deleteCategory({
+        slug: "slug" in item ? item.slug : "",
+        token: accessToken,
+      })
+    );
+    dispatch(getCategories())
+  };
 
   return (
     <div className='flex flex-col justify-around items-center p-3 lg:max-w-[70vw] mx-auto'>
-      <h2 className='font-bold text-[1.5rem]'>Categories</h2>
+      <div className='flex justify-between items-center w-full px-4'>
+        <h2 className='font-bold text-[1.5rem]'>Categories</h2>
+        <TbPlus
+          size={25}
+          aria-label='Add Product'
+          onClick={handleAddCategory}
+          className='hover:cursor-pointer'
+        />
+      </div>
       {pending && <Loading />}
-      <ItemsList items={categories} onDelete={handleDelete}/>
+      <ItemsList items={categories} onDelete={handleDelete} />
 
       <ToastContainer
         position='top-right'

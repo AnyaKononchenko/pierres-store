@@ -1,11 +1,26 @@
-import React from 'react'
+import React from "react";
 
-const ExpandCategory = () => {
+import CategoryForm from "components/category/CategoryForm";
+import { CategoryDocument } from "@customTypes/categories";
+
+const ExpandCategory = ({
+  category,
+  isEdit,
+}: {
+  category: CategoryDocument;
+  isEdit: boolean;
+}) => {
   return (
     <>
-      <p>Products in category: <span>#</span></p>
+      {!isEdit ? (
+        <p>
+          Products in category: <span>#</span>
+        </p>
+      ) : (
+        <CategoryForm variant='edit' initialState={category} />
+      )}
     </>
-  )
-}
+  );
+};
 
-export default ExpandCategory
+export default ExpandCategory;

@@ -3,7 +3,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { ProductDocument, Quality } from "@customTypes/products";
+import { ProductDocument } from "@customTypes/products";
 import {
   getCategories,
   selectCategories,
@@ -96,9 +96,6 @@ const ProductForm = ({
     const newProduct = new FormData();
 
     for (const [key, value] of Object.entries(formData) as FormDataEntry[]) {
-      console.log(key)
-      console.log("value", value)
-      console.log(value instanceof Object)
       newProduct.append(key, value);
     }
 

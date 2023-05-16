@@ -16,7 +16,6 @@ import {
 import { ItemsList, Loading } from "components";
 import { useNavigate } from "react-router-dom";
 import { ItemType } from "@customTypes/common";
-import { ProductDocument } from "@customTypes/products";
 import { selectUser } from "features/authSlice";
 
 const ProductsBoard = () => {
