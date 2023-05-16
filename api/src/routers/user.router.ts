@@ -19,7 +19,6 @@ import { isAdmin, isAuth } from '../middlewares/authUser'
 
 const router = express.Router()
 
-// router.post('/', isLoggedIn, isAdmin, upload('products').single('image'), productValidator(), validate, createProduct)
 router.post(
   '/signup',
   upload('users').single('image'),
@@ -37,7 +36,7 @@ router.put(
   validate as any,
   updateUser
 )
-router.delete('/', deleteUser)
+router.delete('/', isAuth, deleteUser as any)
 router.get('/profile', isAuth, getProfile)
 router.get('/', isAuth, isAdmin, getUser as any)
 

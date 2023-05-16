@@ -7,15 +7,13 @@ import { ItemType } from "@customTypes/common";
 const ItemsList = ({
   items,
   onDelete,
-  onUpdate,
 }: {
   items: ItemType[];
   onDelete: (item: ItemType) => void;
-  onUpdate: (item: ItemType) => void;
 }) => {
   return (
     <div className='flex flex-col gap-3 bg-[#E0CC31] w-full min-h-[80vh] p-3 mt-6 rounded-md'>
-      {items &&
+      {(items && items.length > 0) ?
         items.map((item, index) => (
           <div
             key={index}
@@ -26,11 +24,11 @@ const ItemsList = ({
                 key={"_id" in item ? item?._id : items.length + index}
                 item={item}
                 onDelete={onDelete}
-                onUpdate={onUpdate}
               />
             </div>
           </div>
-        ))}
+        ))
+      : <article className="mx-auto">Nothing to show</article>}
     </div>
   );
 };

@@ -26,13 +26,15 @@ router.post(
 router.get('/', getProduct)
 router.put(
   '/',
+  isAuth,
+  isAdmin,
   isProductExist,
   upload('products').single('image'),
   productValidator(),
   validate,
   updateProduct
 )
-router.delete('/', deleteProduct)
+router.delete('/', isAuth, isAdmin, deleteProduct)
 
 export default router
 

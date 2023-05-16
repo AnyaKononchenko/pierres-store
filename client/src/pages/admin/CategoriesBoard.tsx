@@ -10,6 +10,7 @@ import {
   selectPending,
 } from "features/categoriesSlice";
 import { ItemsList, Loading } from "components";
+import { ItemType } from "@customTypes/common";
 
 const CategoriesBoard = () => {
   const dispatch = useAppDispatch();
@@ -26,12 +27,16 @@ const CategoriesBoard = () => {
     }
   }, [dispatch, error]);
 
+  const handleDelete = (item: ItemType) => {
+    console.log(item)
+    // dispatch(deleteCategory({slug: "slug" in item ? item.slug : "", token: accessToken}))
+  }
 
   return (
     <div className='flex flex-col justify-around items-center p-3 lg:max-w-[70vw] mx-auto'>
       <h2 className='font-bold text-[1.5rem]'>Categories</h2>
       {pending && <Loading />}
-      {/* <ItemsList items={categories}/> */}
+      <ItemsList items={categories} onDelete={handleDelete}/>
 
       <ToastContainer
         position='top-right'

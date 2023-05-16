@@ -9,12 +9,22 @@ import {
 import { isCategoryExist } from '../middlewares/isExist'
 import categoryValidator from '../middlewares/validators/categoryValidator'
 import validate from '../middlewares/validators'
+import { isAuth } from '../middlewares/authUser'
+import { isAdmin } from '../middlewares/authUser'
 
 const router = express.Router()
 
-router.post('/', categoryValidator(), validate, createCategory)
+router.post('/', isAuth, isAdmin, categoryValidator(), validate, createCategory)
 router.get('/', getCategory)
-router.put('/', isCategoryExist, categoryValidator(), validate, updateCategory)
-router.delete('/', deleteCategory)
+router.put(
+  '/',
+  isAuth,
+  isAdmin,
+  isCategoryExist,
+  categoryValidator(),
+  validate,
+  updateCategory
+)
+router.delete('/', isAuth, isAdmin, deleteCategory)
 
 export default router

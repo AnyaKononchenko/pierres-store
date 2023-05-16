@@ -10,24 +10,22 @@ import {
 import { CategoryDocument } from "@customTypes/categories";
 import { ProductDocument } from "@customTypes/products";
 import { UserDocument } from "@customTypes/users";
-import ExpandUser from "./expand/ExpandUser";
-import ExpandProduct from "./expand/ExpandProduct";
-import ExpandCategory from "./expand/ExpandCategory";
+import { ExpandUser, ExpandProduct, ExpandCategory } from "./expand";
 
 import { ItemType } from "@customTypes/common";
 
 const Item = ({
   item,
   onDelete,
-  onUpdate,
 }: {
   item: CategoryDocument | UserDocument | ProductDocument;
   onDelete: (item: ItemType) => void;
-  onUpdate: (item: ItemType) => void;
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const handleExpandItem = () => {
+    if (isEdit && isExpanded) setIsEdit(false);
     setIsExpanded(!isExpanded);
   };
 
@@ -35,7 +33,7 @@ const Item = ({
     if ("isAdmin" in item) {
       return <ExpandUser user={item} />;
     } else if ("price" in item) {
-      return <ExpandProduct product={item} />;
+      return <ExpandProduct product={item} isEdit={isEdit} />;
     } else {
       return <ExpandCategory />;
     }
@@ -45,8 +43,9 @@ const Item = ({
     onDelete(item);
   };
 
-  const handleEdit = (item: ItemType) => {
-    onUpdate(item);
+  const handleEdit = () => {
+    setIsEdit(!isEdit);
+    setIsExpanded(!isExpanded);
   };
 
   return (
@@ -76,8 +75,8 @@ const Item = ({
           <FaRegEdit
             size={25}
             aria-label='Edit item'
-            className='hover:cursor-pointer'
-            onClick={() => handleEdit(item)}
+            className={`hover:cursor-pointer ${isEdit && "animate-pulse"}`}
+            onClick={handleEdit}
           />
           <RiDeleteBinFill
             size={25}

@@ -36,7 +36,6 @@ const ProductsBoard = () => {
     }
     if (message && message.length > 0) {
       toast.success(message);
-      console.log("message", message)
       dispatch(setMessage(''));
     }
   }, [dispatch, error, message]);
@@ -45,12 +44,8 @@ const ProductsBoard = () => {
     navigate('/create-product')
   }
 
-  const handleDelete = (item: ItemType | ProductDocument) => {
+  const handleDelete = (item: ItemType) => {
     dispatch(deleteProduct({slug: "slug" in item ? item.slug : "", token: accessToken}))
-  }
-
-  const handleUpdate = (item: ItemType) => {
-    console.log(item)
   }
 
   return (
@@ -60,7 +55,7 @@ const ProductsBoard = () => {
         <TbPlus size={25} aria-label='Add Product' onClick={handleAddProduct} className="hover:cursor-pointer"/>
       </div>
       {pending && <Loading />}
-      <ItemsList items={products} onDelete={handleDelete} onUpdate={handleUpdate}/>
+      <ItemsList items={products} onDelete={handleDelete}/>
  
       <ToastContainer
         position='top-right'

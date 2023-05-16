@@ -5,3 +5,5 @@ export { default as ItemsList } from "./item/ItemsList"
 
 export { default as Loading } from './modals/Loading'
 export { default as PopUp } from './modals/PopUp'
+
+export { Product, ProductList, ProductForm } from "./product"

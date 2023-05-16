@@ -19,6 +19,7 @@ export const getProducts = createAsyncThunk(
       const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/products`)
       return response.data
     } catch (error) {
+      console.log("error", error)
       return rejectWithValue(error.response.data);
     }
   }
@@ -42,6 +43,24 @@ export const createProduct = createAsyncThunk(
   }
 )
 
+export const editProduct = createAsyncThunk(
+  'products/editProduct',
+  async ({ slug, product, token }: { slug: string | undefined, product: FormData, token: string }, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          "authorization": `Bearer ${token}`
+        }
+      }
+      const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/products?name=${slug}`, product, config)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
 export const deleteProduct = createAsyncThunk(
   'products/deleteProduct',
   async ({ slug, token }: { slug: string | undefined, token: string }, { rejectWithValue }) => {
@@ -58,7 +77,6 @@ export const deleteProduct = createAsyncThunk(
     }
   }
 )
-
 
 export const productsSlice = createSlice({
   name: 'products',
@@ -93,6 +111,22 @@ export const productsSlice = createSlice({
       state.error = '';
     })
     builder.addCase(createProduct.rejected, (state, action) => {
+      console.log("Error in case", action.payload)
+      state.message = ""
+      state.pending = false;
+      state.error = action.payload
+    })
+    // edit product
+    builder.addCase(editProduct.pending, (state) => {
+      state.pending = true;
+    })
+    builder.addCase(editProduct.fulfilled, (state, action) => {
+      console.log(action.payload)
+      state.message = action.payload.message
+      state.pending = false;
+      state.error = '';
+    })
+    builder.addCase(editProduct.rejected, (state, action) => {
       console.log("Error in case", action.payload)
       state.message = ""
       state.pending = false;

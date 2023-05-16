@@ -32,7 +32,7 @@ const Login = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     dispatch(loginUser(loginData));
-    navigate('/profile')
+    !pending && navigate('/profile')
   };
 
   useEffect(() => {
