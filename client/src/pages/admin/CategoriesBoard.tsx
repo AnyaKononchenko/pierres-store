@@ -9,8 +9,7 @@ import {
   deleteCategory,
   getCategories,
   selectCategories,
-  selectError,
-  selectMessage,
+  selectResponse,
   selectPending,
 } from "features/categoriesSlice";
 import { ItemsList, Loading } from "components";
@@ -21,19 +20,17 @@ const CategoriesBoard = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const pending = useAppSelector(selectPending);
-  const error = useAppSelector(selectError);
+  const response = useAppSelector(selectResponse);
   const categories = useAppSelector(selectCategories);
-  const message = useAppSelector(selectMessage)
   const { accessToken } = useAppSelector(selectUser);
 
   useEffect(() => {
     dispatch(getCategories());
-    if (error.message && error.message.length > 0) {
-      console.log("error", error);
-      toast.error(error.message);
+    if (response.status === "error") {
+      toast.error(response.message);
       // navigate("/login");
     }
-  }, [dispatch, error, message]);
+  }, [dispatch, response.message, response.status]);
 
   const handleAddCategory = () => {
     navigate("/create-category");
@@ -46,7 +43,6 @@ const CategoriesBoard = () => {
         token: accessToken,
       })
     );
-    dispatch(getCategories())
   };
 
   return (

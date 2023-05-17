@@ -5,14 +5,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { RootState } from '../redux/store';
 import { CategoryDocument } from '@customTypes/categories';
 
-const emptyError: CommonResponse = {
-  status: "",
-  statusCode: 0,
-  message: "",
-}
-
-const initialState: { categories: CategoryDocument[], message: string, pending: boolean, error: CommonResponse } = { categories: [], message: '', pending: false, error: emptyError }
-
+const initialState: { categories: CategoryDocument[], pending: boolean, response: CommonResponse } = { categories: [], message: '', pending: false, response: {} }
 
 export const getCategories = createAsyncThunk(
   'categories/getCategories',
@@ -82,9 +75,7 @@ export const categoriesSlice = createSlice({
   name: 'categories',
   initialState,
   reducers: {
-    setMessage: (state, action) => {
-      state.message = action.payload
-    }
+
   },
   extraReducers: (builder) => {
     // get categories
@@ -94,62 +85,54 @@ export const categoriesSlice = createSlice({
     builder.addCase(getCategories.fulfilled, (state, action) => {
       state.categories = action.payload.payload;
       state.pending = false;
-      state.error = '';
+      state.response = action.payload;
     })
     builder.addCase(getCategories.rejected, (state, action) => {
       state.pending = false;
-      state.error = action.payload
+      state.categories = [];
+      state.response = action.payload;
     })
     // create category
     builder.addCase(createCategory.pending, (state) => {
       state.pending = true;
     })
     builder.addCase(createCategory.fulfilled, (state, action) => {
-      state.message = action.payload.message
       state.pending = false;
-      state.error = '';
+      state.response = action.payload;
     })
     builder.addCase(createCategory.rejected, (state, action) => {
       state.pending = false;
-      state.message = ""
-      state.error = action.payload
+      state.response = action.payload;
     })
     // update category
     builder.addCase(updateCategory.pending, (state) => {
       state.pending = true;
     })
     builder.addCase(updateCategory.fulfilled, (state, action) => {
-      state.message = action.payload.message
       state.pending = false;
-      state.error = '';
+      state.response = action.payload;
     })
     builder.addCase(updateCategory.rejected, (state, action) => {
       state.pending = false;
-      state.message = ""
-      state.error = action.payload
+      state.response = action.payload;
     })
     // delete category
     builder.addCase(deleteCategory.pending, (state) => {
       state.pending = true;
     })
     builder.addCase(deleteCategory.fulfilled, (state, action) => {
-      state.message = action.payload.message
       state.pending = false;
-      state.error = '';
+      state.response = action.payload;
     })
     builder.addCase(deleteCategory.rejected, (state, action) => {
       state.pending = false;
-      state.message = ""
-      state.error = action.payload
+      state.response = action.payload;
     })
   },
 })
 
-export const { setMessage } = categoriesSlice.actions
-
 export const selectCategories = (state: RootState) => state.categories.categories;
-export const selectMessage = (state: RootState) => state.categories.message;
-export const selectError = (state: RootState) => state.categories.error;
+export const selectResponse = (state: RootState) => state.categories.response;
 export const selectPending = (state: RootState) => state.categories.pending;
 
 export default categoriesSlice.reducer;

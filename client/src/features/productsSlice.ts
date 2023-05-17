@@ -4,13 +4,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { ProductType } from '@customTypes/products';
 
-const emptyError: CommonResponse = {
-  status: "",
-  statusCode: 0,
-  message: "",
-}
 
-const initialState: { products: ProductType[], product: ProductType, pending: boolean, message: string, error: CommonResponse } = { products: [], product: null, pending: false, message: "", error: emptyError }
+const initialState: { products: ProductType[], product: ProductType, pending: boolean, response: CommonResponse } = { products: [], product: null, pending: false, response: {} }
 
 export const getProducts = createAsyncThunk(
   'products/getProducts',
@@ -82,9 +77,6 @@ export const productsSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
-    setMessage: (state, action) => {
-      state.message = action.payload
-    }
   },
   extraReducers: (builder) => {
     // get products
@@ -94,68 +86,54 @@ export const productsSlice = createSlice({
     builder.addCase(getProducts.fulfilled, (state, action) => {
       state.products = action.payload.payload;
       state.pending = false;
-      state.error = '';
+      state.response = action.payload;
     })
     builder.addCase(getProducts.rejected, (state, action) => {
       state.pending = false;
-      state.error = action.payload
+      state.response = action.payload;
     })
     // create product
     builder.addCase(createProduct.pending, (state) => {
       state.pending = true;
     })
     builder.addCase(createProduct.fulfilled, (state, action) => {
-      console.log(action.payload)
-      state.message = action.payload.message
       state.pending = false;
-      state.error = '';
+      state.response = action.payload;
     })
     builder.addCase(createProduct.rejected, (state, action) => {
-      console.log("Error in case", action.payload)
-      state.message = ""
       state.pending = false;
-      state.error = action.payload
+      state.response = action.payload;
     })
     // edit product
     builder.addCase(editProduct.pending, (state) => {
       state.pending = true;
     })
     builder.addCase(editProduct.fulfilled, (state, action) => {
-      console.log(action.payload)
-      state.message = action.payload.message
       state.pending = false;
-      state.error = '';
+      state.response = action.payload;
     })
     builder.addCase(editProduct.rejected, (state, action) => {
-      console.log("Error in case", action.payload)
-      state.message = ""
       state.pending = false;
-      state.error = action.payload
+      state.response = action.payload;
     })
     // delete product
     builder.addCase(deleteProduct.pending, (state) => {
       state.pending = true;
     })
     builder.addCase(deleteProduct.fulfilled, (state, action) => {
-      console.log(action.payload)
-      state.message = action.payload.message
       state.pending = false;
-      state.error = '';
+      state.response = action.payload;
     })
     builder.addCase(deleteProduct.rejected, (state, action) => {
-      console.log("Error in delete", action.payload)
-      state.message = ""
       state.pending = false;
-      state.error = action.payload
+      state.response = action.payload;
     })
   },
 })
 
-export const { setMessage } = productsSlice.actions
 
 export const selectProducts = (state: RootState) => state.products.products;
-export const selectError = (state: RootState) => state.products.error;
+export const selectResponse = (state: RootState) => state.products.response;
 export const selectPending = (state: RootState) => state.products.pending;
-export const selectMessage = (state: RootState) => state.products.message;
 
 export default productsSlice.reducer;

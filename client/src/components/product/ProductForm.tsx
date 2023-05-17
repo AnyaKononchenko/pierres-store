@@ -7,21 +7,18 @@ import { ProductDocument } from "@customTypes/products";
 import {
   getCategories,
   selectCategories,
-  selectError,
-  selectPending,
+  selectResponse as selectCategoryResponse,
+  selectPending as selectCategoryPending,
 } from "features/categoriesSlice";
 import {
   createProduct,
   editProduct,
-  selectError as selectProductError,
-  selectMessage,
+  selectResponse as selectProductResponse,
   selectPending as selectProductPending,
-  setMessage,
 } from "features/productsSlice";
 import { logoutUser, selectUser } from "features/authSlice";
 import { useNavigate } from "react-router-dom";
 import { Loading } from "components";
-
 
 const ProductForm = ({
   variant,
@@ -32,36 +29,41 @@ const ProductForm = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const error = useAppSelector(selectError);
-  const pending = useAppSelector(selectPending);
-  const productError = useAppSelector(selectProductError);
+  const categoryResponse = useAppSelector(selectCategoryResponse);
+  const categoryPending = useAppSelector(selectCategoryPending);
+  const productResponse = useAppSelector(selectProductResponse);
   const productPending = useAppSelector(selectProductPending);
   const categories = useAppSelector(selectCategories);
-  const message = useAppSelector(selectMessage);
   const { accessToken } = useAppSelector(selectUser);
 
   const [formData, setFormData] = useState(initialState);
 
   useEffect(() => {
     dispatch(getCategories());
-    if (error.message && error.message.length > 0) {
-      toast.error(error.message);
+    if (categoryResponse.status === "error") {
+      toast.error(categoryResponse.message);
     }
-  }, [error, dispatch]);
+  }, [categoryResponse.message, categoryResponse.status, dispatch]);
 
   useEffect(() => {
-    if (productError.message && productError.message.length > 0) {
-      toast.error(productError.message);
+    if (productResponse.status === "error") {
+      toast.error(productResponse.message);
     }
-    if (message && message.length > 0) {
+    if (productResponse.status === "success") {
       setFormData(initialState);
-      navigate("/products-board")
-      dispatch(setMessage(""));
+      productResponse.message.match(/created/i) && navigate("/products-board")
     }
-    if (productError.statusCode === 403) {
+    if (productResponse.statusCode === 403) {
       dispatch(logoutUser());
     }
-  }, [initialState, message, productError, dispatch, navigate]);
+  }, [
+    initialState,
+    dispatch,
+    navigate,
+    productResponse.status,
+    productResponse.statusCode,
+    productResponse.message,
+  ]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevFormData) => ({
@@ -99,15 +101,23 @@ const ProductForm = ({
       newProduct.append(key, value);
     }
 
-    variant === "create" 
-    ? dispatch(createProduct({ product: newProduct, token: accessToken }))
-    : dispatch(editProduct({ slug: formData.slug, product: newProduct, token: accessToken }))
+    variant === "create"
+      ? dispatch(createProduct({ product: newProduct, token: accessToken }))
+      : dispatch(
+          editProduct({
+            slug: formData.slug,
+            product: newProduct,
+            token: accessToken,
+          })
+        );
   };
 
   return (
     <div className='flex flex-col items-center p-2'>
-      <h2 className='font-bold text-[1.5rem] my-6'>{`${variant === "create" ? 'Create Product' : 'Edit Product'}`}</h2>
-      {(pending || productPending) && <Loading />}
+      <h2 className='font-bold text-[1.5rem] my-6'>{`${
+        variant === "create" ? "Create Product" : "Edit Product"
+      }`}</h2>
+      {(categoryPending || productPending) && <Loading />}
       <form onSubmit={handleSubmit} className='flex flex-col'>
         <label htmlFor='name'>Name:</label>
         <input

@@ -7,11 +7,9 @@ import { useAppDispatch, useAppSelector } from "redux/hooks";
 import {
   getProducts,
   selectProducts,
-  selectError,
+  selectResponse,
   selectPending,
   deleteProduct,
-  selectMessage,
-  setMessage,
 } from "features/productsSlice";
 import { ItemsList, Loading } from "components";
 import { useNavigate } from "react-router-dom";
@@ -22,22 +20,17 @@ const ProductsBoard = () => {
   const navigate = useNavigate()
   const dispatch = useAppDispatch();
   const pending = useAppSelector(selectPending);
-  const error = useAppSelector(selectError);
+  const response = useAppSelector(selectResponse);
   const products = useAppSelector(selectProducts);
-  const message = useAppSelector(selectMessage)
 
   const { accessToken } = useAppSelector(selectUser)
 
   useEffect(() => {
     dispatch(getProducts());
-    if (error && error.message && error.message.length > 0) {
-      toast.error(error.message);
+    if (response.status === 'error') {
+      toast.error(response.message);
     }
-    if (message && message.length > 0) {
-      toast.success(message);
-      dispatch(setMessage(''));
-    }
-  }, [dispatch, error, message]);
+  }, [dispatch, response.message, response.status]);
 
   const handleAddProduct = () => {
     navigate('/create-product')

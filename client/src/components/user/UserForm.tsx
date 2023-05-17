@@ -6,7 +6,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { UserDocument } from "@customTypes/users";
 import {
-  clearResponse,
   createUser,
   selectPending,
   selectResponse,
@@ -47,7 +46,6 @@ const UserForm = ({
     if (response.statusCode === 403) {
       dispatch(logoutUser());
     }
-    dispatch(clearResponse())
   }, [initialState, response, dispatch, navigate, variant]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

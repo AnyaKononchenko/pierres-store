@@ -8,7 +8,6 @@ import {
   selectResponse,
   selectPending,
   selectUsers,
-  clearResponse,
 } from "features/userSlice";
 import { ItemsList, Loading } from "components";
 import { logoutUser, selectUser } from "features/authSlice";
@@ -27,8 +26,7 @@ const UsersBoard = () => {
       toast.error(response.message);
       dispatch(logoutUser());
     }
-    dispatch(clearResponse())
-  }, [dispatch, response, accessToken]);
+  }, [dispatch, accessToken, response.status, response.message]);
 
   const handleDelete = (item: ItemType) => {
     console.log(item)

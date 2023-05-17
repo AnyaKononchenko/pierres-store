@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { clearResponse, selectResponse, verifyUser } from "features/userSlice";
+import { selectResponse, verifyUser } from "features/userSlice";
 import Error from "pages/Error";
 
 const Verify = () => {
@@ -26,8 +26,7 @@ const Verify = () => {
       toast.error(response.message);
       setIsVerified(false);
     }
-    dispatch(clearResponse())
-  }, [response, navigate, dispatch]);
+  }, [navigate, dispatch, response.status, response.message]);
 
   const handleClick = () => {
     dispatch(verifyUser(searchParams.get("token")));

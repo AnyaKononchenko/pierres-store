@@ -30,7 +30,7 @@ const Profile = () => {
       console.log("error", response.message);
       dispatch(logoutUser());
     }
-  }, [accessToken, response, dispatch, navigate]);
+  }, [accessToken, dispatch, navigate, response.message, response.status]);
 
   return (
     <>

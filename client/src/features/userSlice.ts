@@ -126,9 +126,7 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    clearResponse: (state) => {
-      state.response = {}
-    }
+
   },
   extraReducers: (builder) => {
     // get profile
@@ -209,8 +207,6 @@ export const userSlice = createSlice({
     })
   },
 })
-
-export const { clearResponse } = userSlice.actions
 
 export const selectUser = (state: RootState) => state.user.user;
 export const selectUsers = (state: RootState) => state.user.users;

@@ -4,7 +4,7 @@ import ProductList from "components/product/ProductList";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import {
   getProducts,
-  selectError,
+  selectResponse,
   selectPending,
   selectProducts,
 } from "features/productsSlice";
@@ -13,7 +13,7 @@ import { Loading } from "components";
 const Store = () => {
   const dispatch = useAppDispatch();
   const pending = useAppSelector(selectPending);
-  const error = useAppSelector(selectError);
+  const response = useAppSelector(selectResponse);
   const products = useAppSelector(selectProducts);
 
   useEffect(() => {

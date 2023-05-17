@@ -13,11 +13,6 @@ const emptyUser: UserLocal = {
   isAdmin: false,
 }
 
-const emptyError: CommonResponse = {
-  status: "",
-  statusCode: 0,
-  message: "",
-}
 
 const userInfo: { isLoggedIn: boolean, user: UserLocal } =
   localStorage.getItem("userInfo") !== null
@@ -30,7 +25,7 @@ const userInfo: { isLoggedIn: boolean, user: UserLocal } =
       user: emptyUser,
     }
 
-const initialState: { userInfo: { isLoggedIn: boolean, user: UserLocal }, pending: false, error: CommonResponse } = { userInfo, pending: false, error: emptyError}
+const initialState: { userInfo: { isLoggedIn: boolean, user: UserLocal }, pending: false, response: CommonResponse } = { userInfo, pending: false, response: {}}
 
 export const loginUser = createAsyncThunk(
   'user/login',
@@ -71,32 +66,32 @@ export const authSlice = createSlice({
       state.userInfo = { isLoggedIn: true, user: { name, image, isAdmin, accessToken } }
       localStorage.setItem('userInfo', JSON.stringify(state.userInfo.user))
       state.pending = false
-      state.error = ''
+      state.response = action.payload
     })
     builder.addCase(loginUser.rejected, (state, action) => {
       state.pending = false
-      state.error = action.payload
+      state.response = action.payload
     })
     // log out
     builder.addCase(logoutUser.pending, (state) => {
       state.pending = true
     })
-    builder.addCase(logoutUser.fulfilled, (state) => {
+    builder.addCase(logoutUser.fulfilled, (state, action) => {
       localStorage.removeItem("userInfo")
       state.userInfo = { isLoggedIn: false, user: emptyUser }
       state.pending = false
-      state.error = ''
+      state.response = action.payload
     })
     builder.addCase(logoutUser.rejected, (state, action) => {
       state.pending = false
-      state.error = action.payload
+      state.response = action.payload
     })
   },
 })
 
 export const selectIsLoggedIn = (state: RootState) => state.auth.userInfo.isLoggedIn
 export const selectUser = (state: RootState) => state.auth.userInfo.user
-export const selectError = (state: RootState) => state.auth.error
+export const selectResponse = (state: RootState) => state.auth.response
 export const selectPending = (state: RootState) => state.auth.pending
 
 export default authSlice.reducer

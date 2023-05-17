@@ -8,7 +8,7 @@ import { Login as LoginState } from "@customTypes/users";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import {
   loginUser,
-  selectError,
+  selectResponse,
   selectPending,
 } from "../../features/authSlice";
 import { Loading } from "components";
@@ -17,7 +17,7 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const pending = useAppSelector(selectPending);
-  const error = useAppSelector(selectError);
+  const response = useAppSelector(selectResponse);
 
   const [loginData, setLoginData] = useState<LoginState>({
     email: "",
@@ -36,10 +36,10 @@ const Login = () => {
   };
 
   useEffect(() => {
-    if(error && error.message.length > 0){
-      error.statusCode !== 403 && toast.error(error.message);
+    if(response.status === "error"){
+      response.statusCode !== 403 && toast.error(response.message);
     }
-  }, [error, dispatch]);
+  }, [dispatch, response.message, response.status, response.statusCode]);
 
   return (
     <div className="px-3">

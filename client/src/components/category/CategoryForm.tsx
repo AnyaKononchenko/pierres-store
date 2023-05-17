@@ -8,10 +8,8 @@ import { useAppDispatch, useAppSelector } from "redux/hooks";
 import {
   createCategory,
   getCategories,
-  selectError,
-  selectMessage,
   selectPending,
-  setMessage,
+  selectResponse,
   updateCategory,
 } from "features/categoriesSlice";
 import Loading from "components/modals/Loading";
@@ -26,31 +24,30 @@ const CategoryForm = ({
 }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const message = useAppSelector(selectMessage);
-  const error = useAppSelector(selectError);
+  const response = useAppSelector(selectResponse);
   const pending = useAppSelector(selectPending);
   const { accessToken } = useAppSelector(selectUser);
   const [formData, setFormData] = useState(initialState);
 
-  // TODO: see how to do it better, cause with this useEffect toast
-  // appears 5 times
   useEffect(() => {
-    if (error.message && error.message.length > 0) {
-      toast.error(error.message);
+    if (response.status === "success") {
+      setFormData(initialState);
+      response.message.match(/created/i) && navigate("/categories-board");
     }
-    if (error.statusCode === 403) {
+    if (response.status === "error") {
+      toast.error(response.message);
+    }
+    if (response.statusCode === 403) {
       dispatch(logoutUser());
     }
-  }, [dispatch, error]);
-
-  useEffect(() => {
-    if (message && message.length > 0) {
-      setFormData(initialState);
-      navigate("/categories-board");
-      dispatch(setMessage(""));
-      dispatch(getCategories());
-    }
-  }, [dispatch, initialState, message, navigate]);
+  }, [
+    dispatch,
+    initialState,
+    navigate,
+    response.message,
+    response.status,
+    response.statusCode,
+  ]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevFormData) => ({
