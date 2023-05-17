@@ -1,15 +1,14 @@
 export type UserDocument = {
-  _id: string
+  _id?: string
   name: string
   email: string
   password: string
   address: string
-  image: string
+  image?: string
   isAdmin?: boolean
   isBanned?: boolean
-  createdAt: string
-  updatedAt: string
-  accessToken: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export type UserLocal = {
@@ -20,6 +19,11 @@ export type UserLocal = {
 }
 
 export interface Login {
+  email: string;
+  password: string;
+}
+
+export interface SignUp {
   email: string;
   password: string;
 }

@@ -1,10 +1,11 @@
+// @ts-nocheck
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 
 import User from '../models/User'
 import userService from '../services/user.service'
 import { Slug, Token } from '../@types/common'
-import {
+import ApiError, {
   BadRequestError,
   ForbiddenError,
   InternalServerError,
@@ -27,6 +28,10 @@ export const signUp = async (
 ) => {
   try {
     const image = req.file
+    const isExist = await userService.findByEmail(req.body.email)
+    if (isExist) {
+      throw new BadRequestError('User with this email already exists.')
+    }
 
     const user = new User({
       ...req.body,
@@ -38,7 +43,7 @@ export const signUp = async (
     sendResponse(res, {
       status: 'success',
       statusCode: 201,
-      message: `Registered a new user '${user.name}'. Please, verify your email address to finish registration.`,
+      message: `Registered a new user '${user.name}'. Please, verify your email address to finish a registration.`,
       payload: { token },
     })
   } catch (error) {
@@ -58,27 +63,38 @@ export const verify = async (
   try {
     const { token } = req.query
 
-    jwt.verify(token, JWT_SECRET, async (error: any, decoded: any) => {
-      if (error) {
-        throw new BadRequestError('Token has expired.')
-      }
-      const verifiedUser = await userService.verify(decoded as Token)
+    if (!token) {
+      throw new BadRequestError('Token is missing.')
+    }
 
-      if (!verifiedUser)
-        throw new InternalServerError(
-          'Could not verify this user. Try again later.'
-        )
+    const decoded = jwt.verify(token, JWT_SECRET)
 
-      sendResponse(res, {
-        status: 'success',
-        statusCode: 201,
-        message: `Verified the user '${verifiedUser.name}'. Welcome to Pierre's General Store`,
-        payload: verifiedUser,
-      })
+    const isExist = await userService.findByEmail(decoded.email)
+    console.log('email', decoded.email)
+    console.log(isExist)
+    if (isExist) {
+      throw new BadRequestError('Already Verified.')
+    }
+
+    const verifiedUser = await userService.verify(decoded as Token)
+
+    if (!verifiedUser)
+      throw new InternalServerError(
+        'Could not verify this user. Try again later.'
+      )
+
+    sendResponse(res, {
+      status: 'success',
+      statusCode: 201,
+      message: `Hello, ${verifiedUser.name}! Welcome to Pierre's General Store!`,
+      payload: verifiedUser,
     })
   } catch (error) {
-    if (error instanceof Error && error.name == 'ValidationError') {
-      next(new BadRequestError('Invalid Request', 400, error))
+    if (
+      error instanceof Error &&
+      (error.message == 'jwt malformed') | (error.message == 'jwt expired')
+    ) {
+      next(new BadRequestError('Token is invalid or expired.', 400, error))
     } else {
       next(error)
     }

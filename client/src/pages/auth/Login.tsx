@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -32,15 +32,17 @@ const Login = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     dispatch(loginUser(loginData));
-    !pending && navigate('/profile')
+    !pending && navigate("/profile");
   };
 
   useEffect(() => {
-    error && error.message.length > 0 && toast.error(error.message)
-  }, [error, dispatch])
+    if(error && error.message.length > 0){
+      error.statusCode !== 403 && toast.error(error.message);
+    }
+  }, [error, dispatch]);
 
   return (
-    <div>
+    <div className="px-3">
       <Helmet>
         <title>Login To Pierre's</title>
       </Helmet>
@@ -75,6 +77,7 @@ const Login = () => {
               className='border-b border-b-zinc-900 w-3/4'
             />
           </div>
+            <Link to='/restore-password' className="text-sm mx-auto">Forgotten Password?</Link>
           <button
             type='submit'
             className='bg-slate-500 w-[40%] rounded-md mt-3 mx-auto p-2 hover:bg-slate-200 ease-in duration-150'
@@ -82,6 +85,7 @@ const Login = () => {
             Login
           </button>
         </form>
+        <Link to='/signup'>Not a member? Sign Up</Link>
       </div>
       <ToastContainer
         position='top-right'

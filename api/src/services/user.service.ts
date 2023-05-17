@@ -34,11 +34,11 @@ const signUp = async (user: UserDocument): Promise<string> => {
     subject: 'Pierre\'s General Store: Account Verification',
     html: `
       <h2> Hey ${name} </h2>
-      <p>To activate your account, please click <a href='http://localhost:3000/user/verify?token=${token}' target="_blank">here</a></p>
+      <p>To activate your account, please click <a href='http://localhost:3000/signup/verify?token=${token}' target="_blank">here</a></p>
     `,
   }
 
-  // sendEmail(emailContent);
+  sendEmail(emailContent)
   return token
 }
 

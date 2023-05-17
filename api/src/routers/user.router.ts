@@ -27,7 +27,7 @@ router.post(
   signUp
 )
 
-router.post('/verify', verify)
+router.get('/verify', verify)
 router.put(
   '/',
   isUserExist,

@@ -1,7 +1,7 @@
 // @ts-nocheck
+import axios from 'axios';
 import { RootState } from '../redux/store';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
 
 import { UserDocument } from '@customTypes/users';
 import { CommonResponse } from '@customTypes/common';
@@ -20,13 +20,8 @@ const emptyUser: UserDocument = {
   accessToken: "",
 }
 
-const emptyError: CommonResponse = {
-  status: "",
-  statusCode: 0,
-  message: "",
-}
-
-const initialState : {user: UserDocument, users: UserDocument[], pending: false, error: CommonResponse} = { user: emptyUser, pending: false, error: emptyError }
+const initialState: { user: UserDocument, users: UserDocument[], pending: false, response: CommonResponse } = { user: emptyUser, users: [], pending: false, response: {} }
+// const initialState: { user: UserDocument, users: UserDocument[], pending: false, response: CommonResponse } = { user: emptyUser, users: [], pending: false, response: {status: null, statusCode: null, message: null, payload: null} }
 
 export const getProfile = createAsyncThunk(
   'user/getProfile',
@@ -40,7 +35,6 @@ export const getProfile = createAsyncThunk(
       const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users/profile`, config)
       return response.data
     } catch (error) {
-      console.log(error.response.data)
       return rejectWithValue(error.response.data);
     }
   }
@@ -58,16 +52,83 @@ export const getUsers = createAsyncThunk(
       const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users`, config)
       return response.data
     } catch (error) {
-      console.log(error.response.data)
       return rejectWithValue(error.response.data);
     }
   }
 )
 
+export const createUser = createAsyncThunk(
+  'user/registerUser',
+  async (user: FormData, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/users/signup`, user, config)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
+export const verifyUser = createAsyncThunk(
+  'user/verifyUser',
+  async (token: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users/verify?token=${token}`)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
+export const updateUser = createAsyncThunk(
+  'user/editUser',
+  async ({ id, user, token }: { id: string | undefined, user: FormData, token: string }, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          "authorization": `Bearer ${token}`
+        }
+      }
+      const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/users?id=${id}`, user, config)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
+export const deleteUser = createAsyncThunk(
+  'user/deleteUser',
+  async ({ id, token }: { id: string | undefined, token: string }, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          "authorization": `Bearer ${token}`
+        }
+      }
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/users?id=${id}`, config)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
+
 export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    clearResponse: (state) => {
+      state.response = {}
+    }
   },
   extraReducers: (builder) => {
     // get profile
@@ -77,12 +138,12 @@ export const userSlice = createSlice({
     builder.addCase(getProfile.fulfilled, (state, action) => {
       state.user = action.payload.payload
       state.pending = false
-      state.error = ''
+      state.response = action.payload
     })
     builder.addCase(getProfile.rejected, (state, action) => {
       state.pending = false
       state.user = emptyUser
-      state.error = action.payload
+      state.response = action.payload
     })
     // get users
     builder.addCase(getUsers.pending, (state) => {
@@ -91,19 +152,69 @@ export const userSlice = createSlice({
     builder.addCase(getUsers.fulfilled, (state, action) => {
       state.users = action.payload.payload
       state.pending = false
-      state.error = emptyError
+      state.response = action.payload
     })
     builder.addCase(getUsers.rejected, (state, action) => {
       state.pending = false
       state.users = []
-      state.error = action.payload
+      state.response = action.payload
+    })
+    // register user
+    builder.addCase(createUser.pending, (state) => {
+      state.pending = true
+    })
+    builder.addCase(createUser.fulfilled, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    builder.addCase(createUser.rejected, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    // verify user
+    builder.addCase(verifyUser.pending, (state) => {
+      state.pending = true
+    })
+    builder.addCase(verifyUser.fulfilled, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    builder.addCase(verifyUser.rejected, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    // update user
+    builder.addCase(updateUser.pending, (state) => {
+      state.pending = true
+    })
+    builder.addCase(updateUser.fulfilled, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    builder.addCase(updateUser.rejected, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    // delete user
+    builder.addCase(deleteUser.pending, (state) => {
+      state.pending = true
+    })
+    builder.addCase(deleteUser.fulfilled, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    builder.addCase(deleteUser.rejected, (state, action) => {
+      state.pending = false
+      state.response = action.payload
     })
   },
 })
 
+export const { clearResponse } = userSlice.actions
+
 export const selectUser = (state: RootState) => state.user.user;
 export const selectUsers = (state: RootState) => state.user.users;
-export const selectError = (state: RootState) => state.user.error;
 export const selectPending = (state: RootState) => state.user.pending;
+export const selectResponse = (state: RootState) => state.user.response;
 
 export default userSlice.reducer;

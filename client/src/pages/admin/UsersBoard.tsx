@@ -5,9 +5,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import {
   getUsers,
-  selectError,
+  selectResponse,
   selectPending,
   selectUsers,
+  clearResponse,
 } from "features/userSlice";
 import { ItemsList, Loading } from "components";
 import { logoutUser, selectUser } from "features/authSlice";
@@ -16,17 +17,18 @@ import { ItemType } from "@customTypes/common";
 const UsersBoard = () => {
   const dispatch = useAppDispatch();
   const pending = useAppSelector(selectPending);
-  const error = useAppSelector(selectError);
+  const response = useAppSelector(selectResponse);
   const users = useAppSelector(selectUsers);
   const { accessToken } = useAppSelector(selectUser);
 
   useEffect(() => {
     dispatch(getUsers(accessToken));
-    if (error && error.message && error.message.length > 0) {
-      toast.error(error.message);
+    if (response.status === 'error') {
+      toast.error(response.message);
       dispatch(logoutUser());
     }
-  }, [dispatch, error, accessToken]);
+    dispatch(clearResponse())
+  }, [dispatch, response, accessToken]);
 
   const handleDelete = (item: ItemType) => {
     console.log(item)

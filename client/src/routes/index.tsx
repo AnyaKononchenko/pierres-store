@@ -1,10 +1,11 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import { CategoriesBoard, Dashboard, Home, Login, ProductsBoard, Profile, Store, UsersBoard, CreateProduct, CreateCategory, CreateUser } from "pages";
+import { CategoriesBoard, Dashboard, Home, Login, ProductsBoard, Profile, Store, UsersBoard, CreateProduct, CreateCategory, Verify, ForgottenPassword} from "pages";
 import { Header } from "components";
 import LoggedInRoute from "./LoggedInRoute";
 import AdminRoute from "./AdminRoute";
+import SignUp from "pages/auth/SignUp";
 
 const Index = () => {
   return (
@@ -15,7 +16,11 @@ const Index = () => {
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/store' element={<Store />} />
+
             <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<SignUp />} />
+            <Route path='/signup/verify' element={<Verify />} />
+            <Route path='/restore-password' element={<ForgottenPassword />} />
             
             <Route element={<LoggedInRoute />}>
               <Route path='/profile' element={<Profile />} />
@@ -30,7 +35,6 @@ const Index = () => {
 
               <Route path='/create-product' element={<CreateProduct />} />
               <Route path='/create-category' element={<CreateCategory />} />
-              <Route path='/create-user' element={<CreateUser />} />
             </Route>
           </Routes>
         </main>

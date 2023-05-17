@@ -9,7 +9,7 @@ import {
   selectUser as selectLoggedInUser,
 } from "features/authSlice";
 import {
-  selectError,
+  selectResponse,
   selectPending,
   selectUser,
   getProfile,
@@ -21,17 +21,16 @@ const Profile = () => {
   const navigate = useNavigate();
   const { accessToken, isAdmin } = useAppSelector(selectLoggedInUser);
   const user = useAppSelector(selectUser);
-  const error = useAppSelector(selectError);
+  const response = useAppSelector(selectResponse);
   const pending = useAppSelector(selectPending);
 
   useEffect(() => {
     dispatch(getProfile(accessToken));
-    if (error.message && error.message.length > 0) {
-      console.log("error", error);
+    if (response.status === 'error') {
+      console.log("error", response.message);
       dispatch(logoutUser());
-      // navigate("/login");
     }
-  }, [accessToken, error, dispatch, navigate]);
+  }, [accessToken, response, dispatch, navigate]);
 
   return (
     <>

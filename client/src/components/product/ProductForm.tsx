@@ -189,7 +189,6 @@ const ProductForm = ({
           onChange={handleSelectChange}
           className='border-b border-zinc-600'
         >
-          <option value=''>select</option>
           {categories &&
             categories.map((category, index) => (
               <option key={index} value={category._id}>
