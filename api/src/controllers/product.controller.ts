@@ -3,7 +3,7 @@ import slugify from 'slugify'
 
 import Product from '../models/Product'
 import productService from '../services/product.service'
-import { ProductRequestFields } from '../@types/product'
+import { ProductRequestFields, Season } from '../@types/product'
 import {
   BadRequestError,
   InternalServerError,

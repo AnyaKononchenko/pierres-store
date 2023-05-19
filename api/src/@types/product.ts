@@ -10,24 +10,26 @@ export type ProductDocument = Document & {
   quality: Quality
   sold: number
   category: mongoose.Types.ObjectId
-  season?: Season
+  season: Season[]
   size?: Size
   color?: string
 }
 
-enum Season {
+export enum Season {
   spring = 'Spring',
   summer = 'Summer',
   fall = 'Fall',
   winter = 'Winter',
+  notSeasonal = 'Not-Seasonal',
 }
-enum Size {
+
+export enum Size {
   small = 'Regular',
   medium = 'Large',
   big = 'Deluxe',
 }
 
-enum Quality {
+export enum Quality {
   regular = 'Regular',
   silver = 'Silver',
   gold = 'Gold',

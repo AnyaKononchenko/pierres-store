@@ -48,9 +48,13 @@ const productSchema: Schema = new Schema(
       required: true,
     },
     season: {
-      type: String,
-      enum: ['Spring', 'Summer', 'Fall', 'Winter'],
-      required: false,
+      type: [
+        {
+          type: String,
+          enum: ['Spring', 'Summer', 'Fall', 'Winter', 'Not-Seasonal'],
+        },
+      ],
+      default: [],
     },
     size: {
       type: String,

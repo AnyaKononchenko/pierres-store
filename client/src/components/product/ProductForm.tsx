@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { ProductDocument } from "@customTypes/products";
+import { ProductDocument, Season } from "@customTypes/products";
 import {
   getCategories,
   selectCategories,
@@ -51,7 +52,7 @@ const ProductForm = ({
     }
     if (productResponse.status === "success") {
       setFormData(initialState);
-      productResponse.message.match(/created/i) && navigate("/products-board")
+      productResponse.message.match(/created/i) && navigate("/products-board");
     }
     if (productResponse.statusCode === 403) {
       dispatch(logoutUser());
@@ -90,15 +91,39 @@ const ProductForm = ({
     }));
   };
 
+  const handleCheckboxChange = (season: Season) => {
+    if (formData.season.includes(season)) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        season: formData.season.filter((prevSeason) => prevSeason !== season),
+      }));
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        season: [...formData.season, season],
+      }));
+    }
+  };
+
   const handleSubmit = (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
+
+    let season = '';
 
     type FormDataEntry = [string, string | Blob];
 
     const newProduct = new FormData();
 
+    if (formData.season.length > 0) {
+      season = formData.season.join(",");
+    }
+
     for (const [key, value] of Object.entries(formData) as FormDataEntry[]) {
-      newProduct.append(key, value);
+      if (season && key === "season") {
+        newProduct.append(key, season);
+      } else {
+        newProduct.append(key, value);
+      }
     }
 
     variant === "create"
@@ -135,7 +160,6 @@ const ProductForm = ({
             type='file'
             name='image'
             accept='image/*'
-            // value={formData.image}
             onChange={handleInputChange}
             className='border-b border-zinc-600'
           />
@@ -208,7 +232,42 @@ const ProductForm = ({
         </select>
         <label htmlFor='season'>Season:</label>
 
-        <select
+        <label>
+          <input
+            type='checkbox'
+            checked={formData.season.includes(Season.spring)}
+            onChange={() => handleCheckboxChange(Season.spring)}
+          />
+          Spring
+        </label>
+
+        <label>
+          <input
+            type='checkbox'
+            checked={formData.season.includes(Season.summer)}
+            onChange={() => handleCheckboxChange(Season.summer)}
+          />
+          Summer
+        </label>
+
+        <label>
+          <input
+            type='checkbox'
+            checked={formData.season.includes(Season.fall)}
+            onChange={() => handleCheckboxChange(Season.fall)}
+          />
+          Fall
+        </label>
+
+        <label>
+          <input
+            type='checkbox'
+            checked={formData.season.includes(Season.winter)}
+            onChange={() => handleCheckboxChange(Season.winter)}
+          />
+          Winter
+        </label>
+        {/* <select
           name='season'
           id='season'
           value={formData.season}
@@ -220,7 +279,7 @@ const ProductForm = ({
           <option value='Summer'>Summer</option>
           <option value='Fall'>Fall</option>
           <option value='Winter'>Winter</option>
-        </select>
+        </select> */}
         <label htmlFor='size'>Size:</label>
         <select
           name='size'

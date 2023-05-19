@@ -19,7 +19,7 @@ router.post(
   isAuth,
   isAdmin,
   upload('products').single('image'),
-  productValidator(),
+  productValidator() as any,
   validate,
   createProduct
 )
@@ -30,7 +30,7 @@ router.put(
   isAdmin,
   isProductExist,
   upload('products').single('image'),
-  productValidator(),
+  productValidator() as any,
   validate,
   updateProduct
 )

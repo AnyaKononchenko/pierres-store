@@ -29,10 +29,10 @@ const ExpandProduct = ({ product, isEdit }: { product: ProductDocument, isEdit: 
             <p>Category:</p>
             <p>{product.category.name}</p>
           </div>
-          {product.season && (
+          {product.season.length > 0 && (
             <div className='flex gap-2 w-full '>
               <p>Season:</p>
-              <p>{product.season}</p>
+              <p>{product.season.join(', ')}</p>
             </div>
           )}
           {product.size && (

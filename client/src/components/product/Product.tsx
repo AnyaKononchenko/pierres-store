@@ -3,6 +3,7 @@ import React from "react";
 import { ProductDocument } from "@customTypes/products";
 
 const Product = ({ product }: { product: ProductDocument }) => {
+
   return (
     <article className="flex flex-col bg-slate-300">
       <div>

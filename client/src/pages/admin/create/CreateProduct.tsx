@@ -9,6 +9,7 @@ const emptyForm: ProductDocument = {
   quality: Quality.regular,
   sold: 0,
   category: "",
+  season: [],
 };
 
 const CreateProduct = () => {

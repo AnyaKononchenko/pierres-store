@@ -10,7 +10,7 @@ export type ProductDocument = {
   quality: Quality
   sold: number
   category: string
-  season?: Season
+  season: Season[]
   size?: Size
   color?: string
 }
@@ -24,7 +24,7 @@ export type ProductWithCategory = {
   quality: Quality
   sold: number
   category: CategoryDocument
-  season?: Season
+  season: Season[]
   size?: Size
   color?: string
 }

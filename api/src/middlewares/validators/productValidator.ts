@@ -1,4 +1,5 @@
 import { body } from 'express-validator'
+import { Season } from '../../@types/product'
 
 const productValidator = () => {
   return [
@@ -26,15 +27,7 @@ const productValidator = () => {
       .withMessage('Product\'s \'inStock\' value is required.')
       .isInt({ min: 0, max: 10000 })
       .withMessage('Product\'s \'inStock\' value should be in 0-10000 range.'),
-    body('season')
-      .trim()
-      .optional()
-      .isIn(['Spring', 'Summer', 'Fall', 'Winter'])
-      .withMessage('Season can be Spring, Summer, Fall or Winter'),
-    body('quality')
-      .trim()
-      .isIn(['Regular', 'Silver', 'Gold', 'Iridium'])
-      .withMessage('Quality can be Regular, Silver, Gold or Iridium'),
+    body('season').trim().isString(),
     body('sold')
       .trim()
       .notEmpty()
