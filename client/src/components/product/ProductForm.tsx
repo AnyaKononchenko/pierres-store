@@ -267,19 +267,6 @@ const ProductForm = ({
           />
           Winter
         </label>
-        {/* <select
-          name='season'
-          id='season'
-          value={formData.season}
-          onChange={handleSelectChange}
-          className='border-b border-zinc-600'
-        >
-          <option value=''>select</option>
-          <option value='Spring'>Spring</option>
-          <option value='Summer'>Summer</option>
-          <option value='Fall'>Fall</option>
-          <option value='Winter'>Winter</option>
-        </select> */}
         <label htmlFor='size'>Size:</label>
         <select
           name='size'

@@ -9,4 +9,7 @@ export { default as UserForm } from "./user/UserForm"
 export { default as Loading } from './modals/Loading'
 export { default as PopUp } from './modals/PopUp'
 
+export { default as ImageLoader } from "./helpers/ImageLoader"
+export { default as Price } from "./helpers/Price"
+
 export { Product, ProductList, ProductForm } from "./product"

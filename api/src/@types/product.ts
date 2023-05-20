@@ -39,3 +39,12 @@ export enum Quality {
 export type ProductRequestFields = {
   name: string //slug
 }
+
+export type FilterQuery = {
+  name: string
+  filters: string
+  sort: string
+  order: string
+  page: number
+  limit: number
+}

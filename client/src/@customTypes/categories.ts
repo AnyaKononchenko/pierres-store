@@ -1,5 +1,5 @@
 export type CategoryDocument= {
-  _id?: string
+  _id: string
   name: string
   slug?: string
 }

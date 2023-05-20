@@ -35,7 +35,7 @@ const Item = ({
     } else if ("price" in item) {
       return <ExpandProduct product={item} isEdit={isEdit} />;
     } else {
-      return <ExpandCategory category={item} isEdit={isEdit}/>;
+      return <ExpandCategory category={item as CategoryDocument} isEdit={isEdit}/>;
     }
   };
 

@@ -9,6 +9,8 @@ import {
   selectProducts,
 } from "features/productsSlice";
 import { Loading } from "components";
+import { Helmet } from "react-helmet";
+import { FilterPanel } from "components/product";
 
 const Store = () => {
   const dispatch = useAppDispatch();
@@ -21,11 +23,17 @@ const Store = () => {
   }, [dispatch]);
 
   return (
-    <div className='flex justify-between items-center p-4 my-8'>
+    <>
+    <Helmet>
+      <title>Store</title>
+    </Helmet>
+    <h2 className="font-bold text-[1.3rem] text-center my-6">Discover thousans of goods here!</h2>
+    <div className='flex flex-col lg:flex-row justify-between items-center p-4 my-3 gap-6'>
       {pending && <Loading />}
-      <aside>Filters</aside>
+      <FilterPanel />
       {products && <ProductList products={products} />}
     </div>
+    </>
   );
 };
 

@@ -78,7 +78,7 @@ const Navbar = () => {
       <div
         className={`fixed top-0 ${
           navOpen ? "left-0 " : "left-[-100%] "
-        } w-[70%] h-full border-r border-r-gray-500 bg-slate-500 ease-out duration-300`}
+        } w-[70%] h-full border-r border-r-gray-500 bg-slate-500 ease-out duration-300 z-10`}
       >
         <ul className='flex flex-col pt-24 uppercase '>
           <li className='p-4'>

@@ -1,8 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 
 import Item from "./Item";
 import { ItemType } from "@customTypes/common";
-
 
 const ItemsList = ({
   items,

@@ -3,7 +3,7 @@ import slugify from 'slugify'
 
 import Product from '../models/Product'
 import productService from '../services/product.service'
-import { ProductRequestFields, Season } from '../@types/product'
+import { FilterQuery, ProductRequestFields, Season } from '../@types/product'
 import {
   BadRequestError,
   InternalServerError,
@@ -42,7 +42,7 @@ export const createProduct = async (
 
 // get all categories or provide query param as name and get one
 export const getProduct = async (
-  req: Request<{}, {}, {}, ProductRequestFields>,
+  req: Request<{}, {}, {}, FilterQuery>,
   res: Response,
   next: NextFunction
 ) => {
@@ -50,7 +50,7 @@ export const getProduct = async (
     const { name } = req.query
     const foundProducts = name
       ? await productService.findBySlug(name as string)
-      : await productService.findAll()
+      : await productService.findAll(req.query)
 
     sendResponse(res, {
       status: 'success',

@@ -31,9 +31,32 @@ const findBySlug = async (productName: string): Promise<ProductDocument> => {
   return foundProduct
 }
 
-const findAll = async (): Promise<ProductDocument[]> => {
-  return await Product.find().sort({ createdAt: -1 }).populate('category')
+const findAll = async (query: FilterQuery): Promise<ProductDocument[]> => {
+  // to filter
+  let queryString = JSON.stringify(query)
+  queryString = queryString.replace(
+    /\b(gte|gt|lte|lt)\b/g,
+    (match) => `$${match}`
+  )
+
+  // to sort
+  let sortBy = '-createdAt'
+  if (query.sort) {
+    sortBy = query.sort.split(',').join(' ')
+  }
+
+  // pagination
+  const page = query | 1
+  const limit = query | 20
+  const skip = (page - 1) * limit
+
+  return await Product.find(JSON.parse(queryString))
+    .sort(sortBy)
+    .limit(limit)
+    .skip(skip)
+    .populate('category')
 }
+
 const update = async (
   productName: string,
   update: Partial<ProductDocument>
