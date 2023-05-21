@@ -15,6 +15,16 @@ import { ItemsList, Loading } from "components";
 import { useNavigate } from "react-router-dom";
 import { ItemType } from "@customTypes/common";
 import { selectUser } from "features/authSlice";
+import { FilterQuery } from "@customTypes/products";
+
+const initialQuery: FilterQuery = {
+  category: [],
+  price: { minPrice: 0, maxPrice: 1000000 },
+  search: "",
+  sort: ["createdAt"],
+  page: 1,
+  limit: 20
+};
 
 const ProductsBoard = () => {
   const navigate = useNavigate();
@@ -26,7 +36,7 @@ const ProductsBoard = () => {
   const { accessToken } = useAppSelector(selectUser);
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getProducts(initialQuery));
     if (response.status === "error") {
       toast.error(response.message);
     }

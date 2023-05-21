@@ -47,10 +47,18 @@ export const getProduct = async (
   next: NextFunction
 ) => {
   try {
-    const { name } = req.query
-    const foundProducts = name
-      ? await productService.findBySlug(name as string)
-      : await productService.findAll(req.query)
+    const foundProducts = await productService.findAll(req.query)
+
+    // const productsAmount = await productService.getTotalAmountOfProducts()
+    // const productsAmount = foundProducts
+
+    // const info = {
+    //   message: "Returned products",
+    //   currentPage: req.query.page,
+    //   limit: req.query.limit,
+    //   totalPages: Math.ceil(productsAmount/req.query.limit),
+    //   totalAmount: productsAmount,
+    // }
 
     sendResponse(res, {
       status: 'success',

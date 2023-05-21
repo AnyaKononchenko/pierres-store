@@ -29,6 +29,22 @@ export type ProductWithCategory = {
   color?: string
 }
 
+export type FilterQuery = {
+  category: string[];
+  price: { minPrice: number; maxPrice: number };
+  search: string;
+  sort: string[]
+  page: number
+  limit: number
+}
+
+export type PaginationInfo = {
+  currentPage: number
+  limit: number
+  totalAmount: number
+  totalPages: number
+}
+
 export enum Season {
   spring = 'Spring',
   summer = 'Summer',

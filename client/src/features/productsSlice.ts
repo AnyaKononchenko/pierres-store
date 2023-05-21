@@ -2,19 +2,28 @@
 import { RootState } from '../redux/store';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { ProductType } from '@customTypes/products';
+import { FilterQuery, PaginationInfo, ProductType } from '@customTypes/products';
 
 
-const initialState: { products: ProductType[], product: ProductType, pending: boolean, response: CommonResponse } = { products: [], product: null, pending: false, response: {} }
+
+const initialState: { products: ProductType[], product: ProductType, info: PaginationInfo, pending: boolean, response: CommonResponse } = { products: [], product: null, info: {}, pending: false, response: {} }
 
 export const getProducts = createAsyncThunk(
   'products/getProducts',
-  async (_, { rejectWithValue }) => {
+  async (query: FilterQuery, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/products`)
+      const categoryQuery = query.category.map((category) => {
+        return `category=${category}`
+      }).join('&')
+      const priceQuery = `price[gte]=${query.price.minPrice}&price[lte]=${query.price.maxPrice}`
+      const searchQuery = `search=${query.search}`
+      const paginationQuery = `page=${query.page}&limit=${query.limit}`
+      const sortQuery = `sort=${query.sort}`
+
+      const filterQuery = `${categoryQuery}&${priceQuery}&${searchQuery}&${paginationQuery}&${sortQuery}`
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/products?${filterQuery}`)
       return response.data
     } catch (error) {
-      console.log("error", error)
       return rejectWithValue(error.response.data);
     }
   }
@@ -84,12 +93,14 @@ export const productsSlice = createSlice({
       state.pending = true;
     })
     builder.addCase(getProducts.fulfilled, (state, action) => {
-      state.products = action.payload.payload;
+      state.products = action.payload.payload.products;
+      state.info = action.payload.payload.info;
       state.pending = false;
       state.response = action.payload;
     })
     builder.addCase(getProducts.rejected, (state, action) => {
       state.pending = false;
+      state.info = {};
       state.response = action.payload;
     })
     // create product
@@ -133,6 +144,7 @@ export const productsSlice = createSlice({
 
 
 export const selectProducts = (state: RootState) => state.products.products;
+export const selectInfo = (state: RootState) => state.products.info;
 export const selectResponse = (state: RootState) => state.products.response;
 export const selectPending = (state: RootState) => state.products.pending;
 

@@ -41,8 +41,8 @@ export type ProductRequestFields = {
 }
 
 export type FilterQuery = {
-  name: string
   filters: string
+  search: string
   sort: string
   order: string
   page: number

@@ -31,13 +31,24 @@ const findBySlug = async (productName: string): Promise<ProductDocument> => {
   return foundProduct
 }
 
-const findAll = async (query: FilterQuery): Promise<ProductDocument[]> => {
+const findAll = async (
+  query: FilterQuery
+): Promise<{ info: object; products: ProductDocument[] }> => {
   // to filter
-  let queryString = JSON.stringify(query)
-  queryString = queryString.replace(
+  const { category, price, search } = query
+
+  const filterQuery = { category, price }
+
+  let filterString = JSON.stringify(filterQuery)
+  filterString = filterString.replace(
     /\b(gte|gt|lte|lt)\b/g,
     (match) => `$${match}`
   )
+
+  const filters = JSON.parse(filterString)
+
+  // to search
+  const searchRegex = new RegExp(search, 'ig')
 
   // to sort
   let sortBy = '-createdAt'
@@ -46,15 +57,37 @@ const findAll = async (query: FilterQuery): Promise<ProductDocument[]> => {
   }
 
   // pagination
-  const page = query | 1
-  const limit = query | 20
+  const page = query.page || 1
+  const limit = query.limit || 20
   const skip = (page - 1) * limit
 
-  return await Product.find(JSON.parse(queryString))
-    .sort(sortBy)
-    .limit(limit)
-    .skip(skip)
-    .populate('category')
+  const foundProducts = await Product.find({
+    $or: [
+      { name: { $regex: searchRegex } },
+      { description: { $regex: searchRegex } },
+    ],
+    ...filters,
+  })
+
+  return {
+    info: {
+      currentPage: page,
+      limit: limit,
+      totalPages: Math.ceil(foundProducts.length / limit),
+      totalAmount: foundProducts.length,
+    },
+    products: await Product.find({
+      $or: [
+        { name: { $regex: searchRegex } },
+        { description: { $regex: searchRegex } },
+      ],
+      ...filters,
+    })
+      .sort(sortBy)
+      .limit(limit)
+      .skip(skip)
+      .populate('category'),
+  }
 }
 
 const update = async (
@@ -105,10 +138,16 @@ const remove = async (productName: string): Promise<DeletedDocument> => {
   return removedProduct
 }
 
+const getTotalAmountOfProducts = async () => {
+  const products = await Product.find({})
+  return products.length
+}
+
 export default {
   create,
   findBySlug,
   findAll,
   update,
   remove,
+  getTotalAmountOfProducts,
 }

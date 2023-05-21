@@ -11,5 +11,6 @@ export { default as PopUp } from './modals/PopUp'
 
 export { default as ImageLoader } from "./helpers/ImageLoader"
 export { default as Price } from "./helpers/Price"
+export { default as Pagination } from "./helpers/Pagination"
 
 export { Product, ProductList, ProductForm } from "./product"
