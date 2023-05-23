@@ -5,7 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
-import { selectResponse, verifyUser } from "features/userSlice";
+import { selectResponse, verifyUser } from "features/authSlice";
 import Error from "pages/Error";
 
 const Verify = () => {
@@ -34,7 +34,7 @@ const Verify = () => {
 
   return (
     <>
-      {isVerified && <div>{message}</div>}
+      {isVerified && <div>{response.message}</div>}
       {searchParams.get("token") && !isVerified && (
         <div>
           <div>You are super close to join Pierre's!</div>

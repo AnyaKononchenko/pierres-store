@@ -77,7 +77,7 @@ const Login = () => {
               className='border-b border-b-zinc-900 w-3/4'
             />
           </div>
-            <Link to='/restore-password' className="text-sm mx-auto">Forgotten Password?</Link>
+            <Link to='/forgotten-password' className="text-sm mx-auto">Forgotten Password?</Link>
           <button
             type='submit'
             className='bg-slate-500 w-[40%] rounded-md mt-3 mx-auto p-2 hover:bg-slate-200 ease-in duration-150'

@@ -10,7 +10,7 @@ import ApiError, {
 import { DeletedDocument, ObjectId, Token } from '../@types/common'
 import { removeFile } from '../util/filer'
 import { hashPassword } from '../util/bcrypt'
-import { JWT_SECRET } from '../util/secrets'
+import { CLIENT_URL, JWT_SECRET } from '../util/secrets'
 import { Email } from '../@types/mailer'
 import sendEmail from '../util/mailer'
 
@@ -26,7 +26,7 @@ const signUp = async (user: UserDocument): Promise<string> => {
       address: address && address,
     },
     JWT_SECRET,
-    { expiresIn: '10m' }
+    { expiresIn: '20m' }
   )
 
   const emailContent: Email = {
@@ -34,7 +34,7 @@ const signUp = async (user: UserDocument): Promise<string> => {
     subject: 'Pierre\'s General Store: Account Verification',
     html: `
       <h2> Hey ${name} </h2>
-      <p>To activate your account, please click <a href='http://localhost:3000/signup/verify?token=${token}' target="_blank">here</a></p>
+      <p>To activate your account, please click <a href='${CLIENT_URL}/signup/verify?token=${token}' target="_blank">here</a></p>
     `,
   }
 
@@ -68,6 +68,10 @@ const update = async (
     oldImage = user && user.image
   }
 
+  if (update.password) {
+    update.password = await hashPassword(update.password)
+  }
+
   const updatedUser = await User.findByIdAndUpdate(userId, update, {
     new: true,
   })
@@ -93,6 +97,29 @@ const remove = async (userId: ObjectId): Promise<DeletedDocument> => {
   return removedUser
 }
 
+const forgottenPassword = async (user: UserDocument) => {
+  const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '20m' })
+
+  const emailContent: Email = {
+    email: user.email,
+    subject: 'Password Recovery',
+    html: `
+        <h2> Hey ${user.name} </h2>
+        <h4>Password recovery was requested!</h4>
+        <p>To recover your password, please click <a href='${CLIENT_URL}/password-recovery?token=${token}' target="_blank">here</a></p>
+        <p>If you did not request password recovery, then please ignore this email.</p>
+        `,
+  }
+
+  sendEmail(emailContent)
+  return token
+}
+
+const recoverPassword = async (token: string) => {
+  try {
+  } catch (error) {}
+}
+
 export default {
   signUp,
   verify,
@@ -101,4 +128,6 @@ export default {
   findAll,
   update,
   remove,
+  forgottenPassword,
+  recoverPassword,
 }

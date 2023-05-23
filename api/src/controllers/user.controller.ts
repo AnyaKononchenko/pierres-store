@@ -43,7 +43,7 @@ export const signUp = async (
     sendResponse(res, {
       status: 'success',
       statusCode: 201,
-      message: `Registered a new user '${user.name}'. Please, verify your email address to finish a registration.`,
+      message: `Registered a new user '${user.name}'. Please, verify your email address to complete a registration.`,
       payload: { token },
     })
   } catch (error) {
@@ -70,8 +70,7 @@ export const verify = async (
     const decoded = jwt.verify(token, JWT_SECRET)
 
     const isExist = await userService.findByEmail(decoded.email)
-    console.log('email', decoded.email)
-    console.log(isExist)
+
     if (isExist) {
       throw new BadRequestError('Already Verified.')
     }
@@ -218,6 +217,81 @@ export const getProfile = async (
       statusCode: 200,
       message: 'Profile of the user',
       payload: user,
+    })
+  } catch (error) {
+    if (error instanceof Error && error.name == 'ValidationError') {
+      next(new BadRequestError('Invalid Request', 400, error))
+    } else {
+      next(error)
+    }
+  }
+}
+
+export const forgottenPassword = async (
+  req: Request<{}, {}, {}, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email } = req.body
+    console.log('body', req.body)
+    console.log('email', email)
+    const user = await userService.findByEmail(email)
+    if (!user)
+      sendResponse(res, 400, false, 'Bad Request: this user does not exist')
+
+    const token = await userService.forgottenPassword(user)
+
+    sendResponse(res, {
+      status: 'success',
+      statusCode: 200,
+      message:
+        'Please, verify your email address to proceed to a password recovery.',
+      payload: token,
+    })
+  } catch (error) {
+    if (error instanceof Error && error.name == 'ValidationError') {
+      next(new BadRequestError('Invalid Request', 400, error))
+    } else {
+      next(error)
+    }
+  }
+}
+
+export const recoverPassword = async (
+  req: Request<{}, {}, {}, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { token } = req.query
+    const { password } = req.body
+
+    if (!token) {
+      throw new BadRequestError('Token is missing.')
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET)
+
+    const isExist = await userService.findById(decoded.id)
+
+    if (!isExist) {
+      throw new NotFoundError('This user does not exist')
+    }
+
+    const updatedUser = await userService.update(isExist._id, { password })
+
+    if (!updatedUser) {
+      throw new InternalServerError(
+        'Could not update a password. Try again later.'
+      )
+    }
+
+    sendResponse(res, {
+      status: 'success',
+      statusCode: 200,
+      message: 'Password was recovered.',
+      payload: token,
     })
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {

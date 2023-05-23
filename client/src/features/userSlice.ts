@@ -57,35 +57,6 @@ export const getUsers = createAsyncThunk(
   }
 )
 
-export const createUser = createAsyncThunk(
-  'user/registerUser',
-  async (user: FormData, { rejectWithValue }) => {
-    try {
-      const config = {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      }
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/users/signup`, user, config)
-      return response.data
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-)
-
-export const verifyUser = createAsyncThunk(
-  'user/verifyUser',
-  async (token: string, { rejectWithValue }) => {
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users/verify?token=${token}`)
-      return response.data
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-)
-
 export const updateUser = createAsyncThunk(
   'user/editUser',
   async ({ id, user, token }: { id: string | undefined, user: FormData, token: string }, { rejectWithValue }) => {
@@ -157,30 +128,7 @@ export const userSlice = createSlice({
       state.users = []
       state.response = action.payload
     })
-    // register user
-    builder.addCase(createUser.pending, (state) => {
-      state.pending = true
-    })
-    builder.addCase(createUser.fulfilled, (state, action) => {
-      state.pending = false
-      state.response = action.payload
-    })
-    builder.addCase(createUser.rejected, (state, action) => {
-      state.pending = false
-      state.response = action.payload
-    })
-    // verify user
-    builder.addCase(verifyUser.pending, (state) => {
-      state.pending = true
-    })
-    builder.addCase(verifyUser.fulfilled, (state, action) => {
-      state.pending = false
-      state.response = action.payload
-    })
-    builder.addCase(verifyUser.rejected, (state, action) => {
-      state.pending = false
-      state.response = action.payload
-    })
+    
     // update user
     builder.addCase(updateUser.pending, (state) => {
       state.pending = true

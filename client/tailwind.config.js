@@ -9,7 +9,10 @@ module.exports = {
         'gothic': ['DotGothic16', 'sans-serif'],
         'sigmar': ['Sigmar', 'sans-serif'],
         'silkscreen': ['Silkscreen', 'sans-serif'],
-      }
+      },
+      backgroundImage: {
+        'mainBackground': "url('./assets/stardew-background-edited.png')",
+      },
     },
   },
   plugins: [],

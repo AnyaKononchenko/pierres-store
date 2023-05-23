@@ -8,8 +8,10 @@ import {
 } from '../middlewares/validators/userValidator'
 import {
   deleteUser,
+  forgottenPassword,
   getProfile,
   getUser,
+  recoverPassword,
   signUp,
   updateUser,
   verify,
@@ -39,5 +41,7 @@ router.put(
 router.delete('/', isAuth, deleteUser as any)
 router.get('/profile', isAuth, getProfile)
 router.get('/', isAuth, isAdmin, getUser as any)
+router.put('/forgotten-password', forgottenPassword)
+router.put('/recover-password', recoverPassword)
 
 export default router

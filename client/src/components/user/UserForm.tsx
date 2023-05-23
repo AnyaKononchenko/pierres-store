@@ -5,12 +5,9 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { UserDocument } from "@customTypes/users";
-import {
-  createUser,
-  selectPending,
-  selectResponse,
-  updateUser,
-} from "features/userSlice";
+import { createUser, selectPending, selectResponse } from "features/authSlice";
+
+import { updateUser, selectPending as selectUpdatePending, selectResponse as selectUpdateResponse } from "features/userSlice";
 import { logoutUser, selectUser } from "features/authSlice";
 import Loading from "components/modals/Loading";
 
@@ -30,23 +27,30 @@ const UserForm = ({
   const [formData, setFormData] = useState(initialState);
 
   useEffect(() => {
-    console.log('response', response)
-    if (response.status === 'error') {
+    if (response.status === "error") {
       toast.error(response.message);
     }
-    if (response.status === 'success') {
+    if (response.status === "success" && response.message.match(/email/gi)) {
       setFormData(initialState);
-      toast(response.message)
-      if(variant === 'create'){
+      toast(response.message);
+      if (variant === "create") {
         setTimeout(() => {
-          navigate('/')
-        }, 5000)
-      } 
+          navigate("/");
+        }, 5000);
+      }
     }
     if (response.statusCode === 403) {
       dispatch(logoutUser());
     }
-  }, [initialState, response, dispatch, navigate, variant]);
+  }, [
+    initialState,
+    dispatch,
+    navigate,
+    variant,
+    response.statusCode,
+    response.status,
+    response.message,
+  ]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prevFormData) => ({

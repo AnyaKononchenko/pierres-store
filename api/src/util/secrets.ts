@@ -15,6 +15,7 @@ export const ENVIRONMENT = process.env.NODE_ENV
 const prod = ENVIRONMENT === 'production' // Anything else is treated as 'dev'
 
 export const MONGODB_URI = process.env['MONGODB_ULR'] as string
+export const CLIENT_URL = process.env['CLIENT_URL'] as string
 
 export const JWT_SECRET = process.env['JWT_TOKEN_PR_KEY'] as string
 export const JWT_ACCESS_KEY = process.env['JWT_ACCESS_KEY'] as string

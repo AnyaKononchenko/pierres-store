@@ -13,7 +13,6 @@ const emptyUser: UserLocal = {
   isAdmin: false,
 }
 
-
 const userInfo: { isLoggedIn: boolean, user: UserLocal } =
   localStorage.getItem("userInfo") !== null
     ? {
@@ -25,10 +24,10 @@ const userInfo: { isLoggedIn: boolean, user: UserLocal } =
       user: emptyUser,
     }
 
-const initialState: { userInfo: { isLoggedIn: boolean, user: UserLocal }, pending: false, response: CommonResponse } = { userInfo, pending: false, response: {}}
+const initialState: { userInfo: { isLoggedIn: boolean, user: UserLocal }, pending: false, response: CommonResponse } = { userInfo, pending: false, response: {} }
 
 export const loginUser = createAsyncThunk(
-  'user/login',
+  'auth/login',
   async (credentials: Login, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/login`, credentials)
@@ -40,13 +39,67 @@ export const loginUser = createAsyncThunk(
 )
 
 export const logoutUser = createAsyncThunk(
-  'user/logout',
+  'auth/logout',
   async (_, { rejectWithValue }) => {
     try {
       const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/auth/logout`)
       return response.data
     } catch (error) {
       return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const createUser = createAsyncThunk(
+  'auth/registerUser',
+  async (user: FormData, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/users/signup`, user, config)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
+export const verifyUser = createAsyncThunk(
+  'auth/verifyUser',
+  async (token: string, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/users/verify?token=${token}`)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
+export const forgottenPassword = createAsyncThunk(
+  'auth/forgottenPassword',
+  async (email: string, { rejectWithValue }) => {
+    try {
+      console.log('email', email)
+      const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/users/forgotten-password`, { email })
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
+export const recoverPassword = createAsyncThunk(
+  'auth/recoverPassword',
+  async ({ token, password }: { token: string | null, password: string }, { rejectWithValue }) => {
+    try {
+      const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/users/recover-password?token=${token}`, { password })
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data);
     }
   }
 )
@@ -83,6 +136,57 @@ export const authSlice = createSlice({
       state.response = action.payload
     })
     builder.addCase(logoutUser.rejected, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    // register user
+    builder.addCase(createUser.pending, (state) => {
+      state.pending = true
+    })
+    builder.addCase(createUser.fulfilled, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    builder.addCase(createUser.rejected, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    // verify user
+    builder.addCase(verifyUser.pending, (state) => {
+      state.pending = true
+    })
+    builder.addCase(verifyUser.fulfilled, (state, action) => {
+      console.log("verified:", action.payload)
+      state.pending = false
+      state.response = action.payload
+    })
+    builder.addCase(verifyUser.rejected, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    // forgotten password
+    builder.addCase(forgottenPassword.pending, (state) => {
+      state.pending = true
+    })
+    builder.addCase(forgottenPassword.fulfilled, (state, action) => {
+      console.log("forgotten password:", action.payload)
+      state.pending = false
+      state.response = action.payload
+    })
+    builder.addCase(forgottenPassword.rejected, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    // recover password
+    builder.addCase(recoverPassword.pending, (state) => {
+      state.pending = true
+    })
+    builder.addCase(recoverPassword.fulfilled, (state, action) => {
+      console.log("recovered:", action.payload)
+      state.pending = false
+      state.response = action.payload
+    })
+    builder.addCase(recoverPassword.rejected, (state, action) => {
       state.pending = false
       state.response = action.payload
     })

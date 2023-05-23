@@ -4,9 +4,11 @@ import Index from "routes";
 
 const App = () => {
   return (
-    <Provider store={store}>
-      <Index />
-    </Provider>
+    <div className="font-gothic bg-mainBackground bg-cover bg-no-repeat bg-top">
+      <Provider store={store}>
+        <Index />
+      </Provider>
+    </div>
   );
 };
 export default App;
