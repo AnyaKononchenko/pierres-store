@@ -128,7 +128,7 @@ export const userSlice = createSlice({
       state.users = []
       state.response = action.payload
     })
-    
+
     // update user
     builder.addCase(updateUser.pending, (state) => {
       state.pending = true
