@@ -9,7 +9,7 @@ import { createUser, selectPending, selectResponse } from "features/authSlice";
 
 import { updateUser, selectPending as selectUpdatePending, selectResponse as selectUpdateResponse } from "features/userSlice";
 import { logoutUser, selectUser } from "features/authSlice";
-import Loading from "components/modals/Loading";
+import Loading from "components/helpers/Loading";
 
 const UserForm = ({
   variant,

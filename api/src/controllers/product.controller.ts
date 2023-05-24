@@ -41,7 +41,7 @@ export const createProduct = async (
 }
 
 // get all categories or provide query param as name and get one
-export const getProduct = async (
+export const getProducts = async (
   req: Request<{}, {}, {}, FilterQuery>,
   res: Response,
   next: NextFunction
@@ -49,22 +49,35 @@ export const getProduct = async (
   try {
     const foundProducts = await productService.findAll(req.query)
 
-    // const productsAmount = await productService.getTotalAmountOfProducts()
-    // const productsAmount = foundProducts
-
-    // const info = {
-    //   message: "Returned products",
-    //   currentPage: req.query.page,
-    //   limit: req.query.limit,
-    //   totalPages: Math.ceil(productsAmount/req.query.limit),
-    //   totalAmount: productsAmount,
-    // }
-
     sendResponse(res, {
       status: 'success',
       statusCode: 200,
       message: 'Returned products',
       payload: foundProducts,
+    })
+  } catch (error) {
+    if (error instanceof Error && error.name == 'ValidationError') {
+      next(new BadRequestError('Invalid Request', 400, error))
+    } else {
+      next(error)
+    }
+  }
+}
+
+export const getProduct = async (
+  req: Request<{ slug: string }, {}, {}, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { slug } = req.params
+    const foundProduct = await productService.findBySlug(slug)
+
+    sendResponse(res, {
+      status: 'success',
+      statusCode: 200,
+      message: 'Returned product',
+      payload: foundProduct,
     })
   } catch (error) {
     if (error instanceof Error && error.name == 'ValidationError') {

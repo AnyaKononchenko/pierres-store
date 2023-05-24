@@ -1,10 +1,11 @@
 import express from 'express'
 
 import {
-  getProduct,
+  getProducts,
   createProduct,
   deleteProduct,
   updateProduct,
+  getProduct,
 } from '../controllers/product.controller'
 import { isProductExist } from '../middlewares/isExist'
 import productValidator from '../middlewares/validators/productValidator'
@@ -23,7 +24,8 @@ router.post(
   validate,
   createProduct
 )
-router.get('/', getProduct)
+router.get('/', getProducts)
+router.get('/:slug', getProduct)
 router.put(
   '/',
   isAuth,

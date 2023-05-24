@@ -1,7 +1,11 @@
 export { default as Home } from "./Home"
-export { default as Store } from "./Store"
 export { default as Error } from "./Error"
+
 export { default as Profile } from "./user/Profile"
+export { default as Cart } from "./user/Cart"
+
+export { default as Store } from "./products/Store"
+export {default as ProductDetails} from "./products/ProductDetails"
 
 export { default as Login } from "./auth/Login"
 export { default as SignUp } from "./auth/SignUp"

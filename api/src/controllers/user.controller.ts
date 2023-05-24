@@ -301,3 +301,37 @@ export const recoverPassword = async (
     }
   }
 }
+
+export const banFunctionality = async (
+  req: Request<{}, {}, UserUpdateFields, UserQuery>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id } = req.query
+
+    const { isBanned } = req.body
+
+    const update = { isBanned }
+
+    const updatedUser = await userService.update(id, update)
+
+    if (!updatedUser) {
+      throw new InternalServerError(
+        `Could not update a user with ID: '${id}'. Try again later.`
+      )
+    }
+    sendResponse(res, {
+      status: 'success',
+      statusCode: 200,
+      message: 'Successfully updated a user',
+      payload: updatedUser,
+    })
+  } catch (error) {
+    if (error instanceof Error && error.name == 'ValidationError') {
+      next(new BadRequestError('Invalid Request', 400, error))
+    } else {
+      next(error)
+    }
+  }
+}

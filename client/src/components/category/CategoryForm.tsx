@@ -12,7 +12,7 @@ import {
   selectResponse,
   updateCategory,
 } from "features/categoriesSlice";
-import Loading from "components/modals/Loading";
+import Loading from "components/helpers/Loading";
 import { logoutUser, selectUser } from "features/authSlice";
 
 const CategoryForm = ({

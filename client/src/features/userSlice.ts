@@ -92,6 +92,23 @@ export const deleteUser = createAsyncThunk(
   }
 )
 
+export const banUser = createAsyncThunk(
+  'user/banUser',
+  async ({ id, token, user }: { id: string | undefined, token: string, user: { isBanned: boolean } }, { rejectWithValue }) => {
+    try {
+      const config = {
+        headers: {
+          "authorization": `Bearer ${token}`
+        }
+      }
+      const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/users/ban?id=${id}`, user, config)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
+
 
 export const userSlice = createSlice({
   name: 'user',
@@ -150,6 +167,19 @@ export const userSlice = createSlice({
       state.response = action.payload
     })
     builder.addCase(deleteUser.rejected, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    // ban user
+    builder.addCase(banUser.pending, (state) => {
+      state.pending = true
+    })
+    builder.addCase(banUser.fulfilled, (state, action) => {
+      state.pending = false
+      state.response = action.payload
+    })
+    builder.addCase(banUser.rejected, (state, action) => {
+      console.log("REJECTED")
       state.pending = false
       state.response = action.payload
     })

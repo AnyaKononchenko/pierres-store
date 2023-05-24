@@ -35,7 +35,9 @@ const Item = ({
     } else if ("price" in item) {
       return <ExpandProduct product={item} isEdit={isEdit} />;
     } else {
-      return <ExpandCategory category={item as CategoryDocument} isEdit={isEdit}/>;
+      return (
+        <ExpandCategory category={item as CategoryDocument} isEdit={isEdit} />
+      );
     }
   };
 
@@ -50,7 +52,7 @@ const Item = ({
 
   return (
     <>
-      <div className='flex justify-between items-center bg-[#E0CC31] w-full h-full'>
+      <div className='flex justify-between items-center bg-[#FDC175] w-full h-full'>
         <div className='flex justify-start items-center gap-2 '>
           {"image" in item ? (
             <img
@@ -61,7 +63,7 @@ const Item = ({
               className='w-[3.5rem] h-[3.5rem]'
             />
           ) : (
-            <div className='w-[3.5rem] h-[3.5rem] bg-[#EBDD77] border-2 border-zinc-400 rounded-md p-2'>
+            <div className='w-[3.5rem] h-[3.5rem] bg-[#EBDD77] border-2 border-[#D68F54] rounded-md p-2'>
               <p
                 className='w-full h-full font-bold text-[1.3rem] text-center'
                 aria-label='Item icon'
@@ -72,12 +74,14 @@ const Item = ({
           <p>{item.name}</p>
         </div>
         <div className='flex items-center gap-2'>
-          <FaRegEdit
-            size={25}
-            aria-label='Edit item'
-            className={`hover:cursor-pointer ${isEdit && "animate-pulse"}`}
-            onClick={handleEdit}
-          />
+          {!("isAdmin" in item) && (
+            <FaRegEdit
+              size={25}
+              aria-label='Edit item'
+              className={`hover:cursor-pointer ${isEdit && "animate-pulse"}`}
+              onClick={handleEdit}
+            />
+          )}
           <RiDeleteBinFill
             size={25}
             aria-label='Delete item'

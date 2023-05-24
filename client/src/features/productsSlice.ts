@@ -8,6 +8,17 @@ import { FilterQuery, PaginationInfo, ProductType } from '@customTypes/products'
 
 const initialState: { products: ProductType[], product: ProductType, info: PaginationInfo, pending: boolean, response: CommonResponse } = { products: [], product: null, info: {}, pending: false, response: {} }
 
+export const getProduct = createAsyncThunk(
+  'products/getProduct',
+  async (slug: string | undefined, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/products/${slug}`)
+      return response.data
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+)
 export const getProducts = createAsyncThunk(
   'products/getProducts',
   async (query: FilterQuery, { rejectWithValue }) => {
@@ -88,6 +99,20 @@ export const productsSlice = createSlice({
   reducers: {
   },
   extraReducers: (builder) => {
+    // get product
+    builder.addCase(getProduct.pending, (state) => {
+      state.pending = true;
+    })
+    builder.addCase(getProduct.fulfilled, (state, action) => {
+      state.product = action.payload.payload;
+      state.pending = false;
+      state.response = action.payload;
+    })
+    builder.addCase(getProduct.rejected, (state, action) => {
+      state.pending = false;
+      state.product = {};
+      state.response = action.payload;
+    })
     // get products
     builder.addCase(getProducts.pending, (state) => {
       state.pending = true;
@@ -143,6 +168,7 @@ export const productsSlice = createSlice({
 })
 
 
+export const selectProduct = (state: RootState) => state.products.product;
 export const selectProducts = (state: RootState) => state.products.products;
 export const selectInfo = (state: RootState) => state.products.info;
 export const selectResponse = (state: RootState) => state.products.response;

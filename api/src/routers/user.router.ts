@@ -7,6 +7,7 @@ import {
   UserUpdateFieldsValidator,
 } from '../middlewares/validators/userValidator'
 import {
+  banFunctionality,
   deleteUser,
   forgottenPassword,
   getProfile,
@@ -30,6 +31,14 @@ router.post(
 )
 
 router.get('/verify', verify)
+router.put('/ban', isAuth, isAdmin, isUserExist as any, banFunctionality as any)
+
+router.put('/forgotten-password', forgottenPassword)
+router.put('/recover-password', recoverPassword)
+router.get('/profile', isAuth, getProfile)
+
+router.delete('/', isAuth, deleteUser as any)
+router.get('/', isAuth, isAdmin, getUser as any)
 router.put(
   '/',
   isUserExist,
@@ -38,10 +47,5 @@ router.put(
   validate as any,
   updateUser
 )
-router.delete('/', isAuth, deleteUser as any)
-router.get('/profile', isAuth, getProfile)
-router.get('/', isAuth, isAdmin, getUser as any)
-router.put('/forgotten-password', forgottenPassword)
-router.put('/recover-password', recoverPassword)
 
 export default router
