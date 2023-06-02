@@ -21,7 +21,7 @@ const Product = ({ product }: { product: ProductWithCategory }) => {
             alt={product.name}
             placeholderSrc={Placeholder}
             styles={`w-[5rem] h-auto aspect-square ${
-              product.category.name === "Recipe" && "blur-[2px]"
+              product.category.name === "Recipe" && "grayscale"
             }`}
           />
           {product.category.name === "Recipe" && (

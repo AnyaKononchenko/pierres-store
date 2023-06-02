@@ -40,7 +40,31 @@ export const createProduct = async (
   }
 }
 
-// get all categories or provide query param as name and get one
+export const getProductsBySlug = async (
+  req: Request<{}, {}, { slugs: string }, {}>,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { slugs } = req.body
+    console.log('SLUGS', slugs)
+    const foundProducts = await productService.findAllBySlug(slugs)
+
+    sendResponse(res, {
+      status: 'success',
+      statusCode: 200,
+      message: 'Returned products',
+      payload: foundProducts,
+    })
+  } catch (error) {
+    if (error instanceof Error && error.name == 'ValidationError') {
+      next(new BadRequestError('Invalid Request', 400, error))
+    } else {
+      next(error)
+    }
+  }
+}
+
 export const getProducts = async (
   req: Request<{}, {}, {}, FilterQuery>,
   res: Response,

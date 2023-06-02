@@ -15,6 +15,7 @@ export type UserLocal = {
   name: string
   image: string
   isAdmin: boolean
+  isBanned: boolean
   accessToken: string
 }
 

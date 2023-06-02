@@ -11,6 +11,7 @@ const emptyUser: UserLocal = {
   image: "",
   accessToken: "",
   isAdmin: false,
+  isBanned: false,
 }
 
 const userInfo: { isLoggedIn: boolean, user: UserLocal } =
@@ -31,8 +32,15 @@ export const loginUser = createAsyncThunk(
   async (credentials: Login, { rejectWithValue }) => {
     try {
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/auth/login`, credentials)
+      if (response.data.payload.user.isBanned) {
+        throw new Error("This profile is banned. Reach out to a manager to learn details.")
+      }
       return response.data
     } catch (error) {
+      if( error instanceof Error){
+        const customError = {message: error.message, status: 'error'}
+        return rejectWithValue(customError)
+      }
       return rejectWithValue(error.response.data)
     }
   }
@@ -83,7 +91,6 @@ export const forgottenPassword = createAsyncThunk(
   'auth/forgottenPassword',
   async (email: string, { rejectWithValue }) => {
     try {
-      console.log('email', email)
       const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/users/forgotten-password`, { email })
       return response.data
     } catch (error) {
@@ -115,8 +122,8 @@ export const authSlice = createSlice({
       state.pending = true
     })
     builder.addCase(loginUser.fulfilled, (state, action) => {
-      const { accessToken, user: { name, image, isAdmin } } = action.payload.payload
-      state.userInfo = { isLoggedIn: true, user: { name, image, isAdmin, accessToken } }
+      const { accessToken, user: { name, image, isAdmin, isBanned } } = action.payload.payload
+      state.userInfo = { isLoggedIn: true, user: { name, image, isAdmin, accessToken, isBanned } }
       localStorage.setItem('userInfo', JSON.stringify(state.userInfo.user))
       state.pending = false
       state.response = action.payload

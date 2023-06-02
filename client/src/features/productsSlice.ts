@@ -19,6 +19,8 @@ export const getProduct = createAsyncThunk(
     }
   }
 )
+
+
 export const getProducts = createAsyncThunk(
   'products/getProducts',
   async (query: FilterQuery, { rejectWithValue }) => {

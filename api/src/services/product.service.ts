@@ -90,6 +90,12 @@ const findAll = async (
   }
 }
 
+const findAllBySlug = async (slugs: string) => {
+  const arrayOfSlugs = slugs.split(',')
+  const products = await Product.find({ slug: { $in: arrayOfSlugs } })
+  return products
+}
+
 const update = async (
   productName: string,
   update: Partial<ProductDocument>
@@ -150,4 +156,5 @@ export default {
   update,
   remove,
   getTotalAmountOfProducts,
+  findAllBySlug,
 }

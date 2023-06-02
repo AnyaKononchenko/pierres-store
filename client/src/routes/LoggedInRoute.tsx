@@ -1,12 +1,13 @@
-import { Outlet } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { Outlet } from "react-router-dom";
+import { useSelector } from "react-redux";
 
-import { selectIsLoggedIn } from 'features/authSlice'
-import { Login } from 'pages'
+import { selectIsLoggedIn, selectUser } from "features/authSlice";
+import { Login } from "pages";
 
 const LoggedInRoute = () => {
-  const isLoggedIn = useSelector(selectIsLoggedIn)
-  return isLoggedIn ? <Outlet /> : <Login />
-}
+  const isLoggedIn = useSelector(selectIsLoggedIn);
+  const { isBanned } = useSelector(selectUser);
+  return (isLoggedIn && !isBanned) ? <Outlet /> : <Login />;
+};
 
-export default LoggedInRoute
+export default LoggedInRoute;

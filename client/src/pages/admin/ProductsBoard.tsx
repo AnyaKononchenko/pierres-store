@@ -58,12 +58,12 @@ const ProductsBoard = () => {
   return (
     <div className='flex flex-col justify-around items-center p-3 lg:max-w-[70vw] mx-auto'>
       <div className='flex justify-between items-center w-full px-4'>
-        <h2 className='font-bold text-[1.5rem]'>Products</h2>
+        <h2 className='font-bold text-[1.5rem] text-zinc-300'>Products</h2>
         <TbPlus
           size={25}
           aria-label='Add Product'
           onClick={handleAddProduct}
-          className='hover:cursor-pointer'
+          className='cursor-pointer text-zinc-300'
         />
       </div>
       {pending && <Loading />}

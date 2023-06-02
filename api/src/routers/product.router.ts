@@ -6,6 +6,7 @@ import {
   deleteProduct,
   updateProduct,
   getProduct,
+  getProductsBySlug,
 } from '../controllers/product.controller'
 import { isProductExist } from '../middlewares/isExist'
 import productValidator from '../middlewares/validators/productValidator'
@@ -24,6 +25,7 @@ router.post(
   validate,
   createProduct
 )
+router.get('/slugs', getProductsBySlug)
 router.get('/', getProducts)
 router.get('/:slug', getProduct)
 router.put(
