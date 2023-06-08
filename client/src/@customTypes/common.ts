@@ -37,3 +37,8 @@ export type PopUpProps = {
 
 
 export type ItemType = UserDocument | ProductDocument | CategoryDocument;
+
+export enum LoginVariant {
+  regular = 'regular',
+  access = 'access'
+}

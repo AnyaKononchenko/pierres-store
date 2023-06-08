@@ -25,7 +25,7 @@ router.post(
   validate,
   createProduct
 )
-router.get('/slugs', getProductsBySlug)
+router.post('/slugs', getProductsBySlug)
 router.get('/', getProducts)
 router.get('/:slug', getProduct)
 router.put(

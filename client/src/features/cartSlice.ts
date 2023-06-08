@@ -3,23 +3,22 @@ import { RootState } from '../redux/store';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { ProductWithCategory } from '@customTypes/products';
+import { CartItem, ProductWithCategory } from '@customTypes/products';
 
-const cart: string[] =
+const cart: CartItem[] =
   localStorage.getItem("cart") !== null
     ?
     JSON.parse(String(localStorage.getItem("cart")))
     : [];
 
 
-const initialState: { cart: string[], products: ProductWithCategory[] } = { cart, products: [] };
+const initialState: { cart: CartItem[], products: ProductWithCategory[] } = { cart, products: [] };
 
 export const getCart = createAsyncThunk(
   'cart/getCart',
   async (slugs: { slugs: string | undefined }, { rejectWithValue }) => {
     try {
-      console.log(slugs)
-      const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/products/slugs`, slugs)
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/products/slugs`, slugs)
       return response.data
     } catch (error) {
       return rejectWithValue(error.response.data);
@@ -32,12 +31,18 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      console.log(action.payload)
-      state.cart = [...state.cart, action.payload]
-      localStorage.setItem('cart', JSON.stringify(state.cart))
+      if (!state.cart.find((product) => product.name === action.payload)) {
+        state.cart = [...state.cart, { name: action.payload, amount: 1 }]
+        localStorage.setItem('cart', JSON.stringify(state.cart))
+      }
     },
     removeFromCart: (state, action) => {
-      state.cart = state.cart.filter((product) => product !== action.payload)
+      state.cart = state.cart.filter((product) => product.name !== action.payload)
+      localStorage.setItem('cart', JSON.stringify(state.cart))
+    },
+    changeProductAmount: (state, action) => {
+      const { name, amount } = action.payload
+      state.cart.find((product) => product.name === name).amount = amount
       localStorage.setItem('cart', JSON.stringify(state.cart))
     },
     clearCart: (state) => {
@@ -62,9 +67,9 @@ export const cartSlice = createSlice({
   }
 })
 
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions
+export const { addToCart, removeFromCart, changeProductAmount, clearCart } = cartSlice.actions
 
-export const selectCart = (state: RootState) => state.cart.cart;
-export const selectProducts = (state: RootState) => state.cart.products;
+export const selectCart = (state: RootState) => state.cart.cart; // array of slugs
+export const selectProducts = (state: RootState) => state.cart.products; // actual products from api
 
 export default cartSlice.reducer;

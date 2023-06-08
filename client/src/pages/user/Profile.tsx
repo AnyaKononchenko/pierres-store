@@ -1,7 +1,7 @@
 // @ts-nocheck
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AiOutlineClose } from "react-icons/ai";
 
@@ -90,8 +90,8 @@ const Profile = () => {
     <>
       {pending && <Loading />}
       <div className='flex flex-col lg:flex-row justify-between w-[90vw] lg:w-[60vw] h-full mx-auto bg-[#FDC175] border-[#A8824F] border-4'>
-        <div className='flex flex-col lg:flex-row gap-2 items-center p-8'>
-          <div className='flex flex-col items-center gap-2 w-full'>
+        <div className='flex flex-col lg:flex-row w-full gap-2 items-center p-8 lg:py-16'>
+          <div className='flex flex-col items-center gap-2 w-full lg:w-[40%]'>
             <ImageLoader
               imageSrc={`users/${userInfo.image}`}
               alt={user.name}
@@ -177,7 +177,7 @@ const Profile = () => {
           </div>
         </div>
 
-        <div className='p-4 border-t-[#A8824F] border-t-4 lg:border-l-[#A8824F] lg:border-l-4 lg:border-t-0'>
+        <div className='p-4 lg:py-16 border-t-[#A8824F] border-t-4 lg:border-l-[#A8824F] lg:border-l-4 lg:border-t-0'>
           <ul className='relative flex justify-between h-full lg:flex-col'>
             <li className='flex items-center justify-between gap-4'>
               <Link

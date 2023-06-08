@@ -5,6 +5,7 @@ import { BiUserCircle } from "react-icons/bi";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { logoutUser, selectIsLoggedIn, selectUser } from "features/authSlice";
+import { selectCart } from "features/cartSlice";
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
@@ -13,6 +14,7 @@ const Navbar = () => {
   const [navOpen, setNavOpen] = useState<boolean>(false);
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const user = useAppSelector(selectUser);
+  const cart = useAppSelector(selectCart)
 
   const handleNavOpen = () => {
     setNavOpen(!navOpen);
@@ -39,7 +41,7 @@ const Navbar = () => {
           <Link to='/profile'>Profile</Link>
         </li>
         <li className='p-4 hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#FDC175]'>
-          <Link to='/cart'>Cart</Link>
+          <Link to='/cart'>{isLoggedIn ? `Cart (${cart.length})`: 'Cart'}</Link>
         </li>
         <li className='p-4  hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#FDC175]'>
           <Link to='/cart'>Partners</Link>
@@ -91,7 +93,7 @@ const Navbar = () => {
             <li className='p-4 basic-panel'>Profile</li>
           </Link>
           <Link to='/cart' onClick={() => handleNavOpen()}>
-            <li className='p-4 basic-panel'>Cart</li>
+            <li className='p-4 basic-panel'>{isLoggedIn ? `Cart (${cart.length})`: 'Cart'}</li>
           </Link>
           <Link to='/cart' onClick={() => handleNavOpen()}>
             <li className='p-4 basic-panel'>Partners</li>

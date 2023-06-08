@@ -64,3 +64,8 @@ export enum Quality {
   gold = 'Gold',
   iridium = 'Iridium',
 }
+
+export type CartItem = {
+  name: string,
+  amount: number,
+}

@@ -5,6 +5,8 @@ export {default as Footer} from './footer/Footer'
 
 export { default as ItemsList } from "./item/ItemsList"
 
+export { default as CartItem } from "./cart/CartItem"
+
 export { default as CategoryForm } from "./category/CategoryForm"
 export { default as UserForm } from "./user/UserForm"
 

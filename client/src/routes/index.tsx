@@ -22,6 +22,7 @@ import { Footer, Header } from "components";
 import LoggedInRoute from "./LoggedInRoute";
 import AdminRoute from "./AdminRoute";
 import SignUp from "pages/auth/SignUp";
+import { LoginVariant } from "@customTypes/common";
 
 const Index = () => {
   return (
@@ -35,7 +36,7 @@ const Index = () => {
             <Route path='/store' element={<Store />} />
             <Route path='/products/:slug' element={<ProductDetails />} />
 
-            <Route path='/login' element={<Login />} />
+            <Route path='/login' element={<Login variant={LoginVariant.regular}/>} />
             <Route path='/signup' element={<SignUp />} />
             <Route path='/signup/verify' element={<Verify />} />
             <Route path='/forgotten-password' element={<ForgottenPassword />} />

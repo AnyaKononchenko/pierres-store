@@ -47,7 +47,6 @@ export const getProductsBySlug = async (
 ) => {
   try {
     const { slugs } = req.body
-    console.log('SLUGS', slugs)
     const foundProducts = await productService.findAllBySlug(slugs)
 
     sendResponse(res, {
