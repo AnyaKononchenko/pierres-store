@@ -29,7 +29,7 @@ const Index = () => {
     <>
       <Router>
         <Header />
-        <main className='min-h-[80vh] flex items-center justify-center'>
+        <main className='min-h-[80vh] flex justify-center'>
           <Routes>
             <Route path='/' element={<Home />} />
 

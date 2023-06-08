@@ -1,6 +1,8 @@
+import React from "react";
+
 import { CategoryDocument } from "@customTypes/categories";
 import { CategoryForm } from "components";
-import React from "react";
+
 
 const emptyForm: CategoryDocument = {
   _id: "",
