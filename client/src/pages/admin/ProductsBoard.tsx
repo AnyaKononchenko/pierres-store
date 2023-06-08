@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { TbPlus } from "react-icons/tb";
+import { TiArrowBack } from "react-icons/ti";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,7 +24,7 @@ const initialQuery: FilterQuery = {
   search: "",
   sort: ["createdAt"],
   page: 1,
-  limit: 20
+  limit: 20,
 };
 
 const ProductsBoard = () => {
@@ -54,11 +55,19 @@ const ProductsBoard = () => {
       })
     );
   };
-  
+
   return (
     <div className='flex flex-col justify-around items-center p-3 lg:max-w-[70vw] mx-auto'>
       <div className='flex justify-between items-center w-full px-4'>
-        <h2 className='font-bold text-[1.5rem] text-zinc-300'>Products</h2>
+        <div className='relative flex items-center justify-center w-full'>
+          <button
+            className='absolute left-0 text-[#FDC175] text-[1.7rem] hover:animate-pulse duration-50'
+            onClick={() => navigate("/dashboard")}
+          >
+            <TiArrowBack />
+          </button>
+          <h2 className='font-bold text-[1.5rem] text-zinc-300'>Products</h2>
+        </div>
         <TbPlus
           size={25}
           aria-label='Add Product'

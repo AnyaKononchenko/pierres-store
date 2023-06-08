@@ -42,3 +42,9 @@ export enum LoginVariant {
   regular = 'regular',
   access = 'access'
 }
+
+export type StatisticInfo = {
+  categories: number,
+  products: number,
+  users: number,
+}
