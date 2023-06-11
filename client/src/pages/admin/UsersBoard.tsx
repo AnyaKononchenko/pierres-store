@@ -12,7 +12,7 @@ import {
   selectUsers,
 } from "features/userSlice";
 import { ItemsList, Loading } from "components";
-import { selectUser } from "features/authSlice";
+import { logoutUser, selectUser } from "features/authSlice";
 import { ItemType } from "@customTypes/common";
 import { useNavigate } from "react-router-dom";
 
@@ -26,10 +26,13 @@ const UsersBoard = () => {
 
   useEffect(() => {
     dispatch(getUsers(accessToken));
-    if (response.status === "error") {
-      toast.error(response.message);
+    if(response.status === 'error'){
+      toast.error(response.message)
     }
-  }, [dispatch, accessToken, response.status, response.message]);
+    if (response.statusCode === 403 | response.statusCode === 401) {
+      dispatch(logoutUser())
+    }
+  }, [dispatch, accessToken, response.status, response.message, response.statusCode]);
 
   const handleDelete = (item: ItemType) => {
     console.log("Delete user");

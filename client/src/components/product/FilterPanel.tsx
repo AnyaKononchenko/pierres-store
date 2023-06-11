@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   BsArrowLeftCircleFill,
   BsArrowRightCircleFill,
   BsSearch,
 } from "react-icons/bs";
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import {
@@ -12,6 +14,7 @@ import {
   selectResponse as selectCategoriesResponse,
 } from "features/categoriesSlice";
 import { FilterQuery } from "@customTypes/products";
+import Price from "components/helpers/Price";
 
 const sorting = ["name", "price", "category", "createdAt"];
 
@@ -27,8 +30,11 @@ const FilterPanel = ({
   const categoriesResponse = useAppSelector(selectCategoriesResponse);
 
   const [query, setQuery] = useState<FilterQuery>(initialQuery);
+  const [priceRange, setPriceRange] = useState({ minPrice: 0, maxPrice: 1000 });
+  const price = useRef(priceRange);
 
   const [isOpen, setIsOpen] = useState(false);
+  const [isMaxPrice, setIsMaxPrice] = useState(false)
 
   useEffect(() => {
     dispatch(getCategories());
@@ -37,6 +43,10 @@ const FilterPanel = ({
   const handleOpen = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    price.current = priceRange;
+  }, [priceRange]);
 
   const handleCheckboxChange = (categoryId: string) => {
     if (query.category.includes(categoryId)) {
@@ -70,17 +80,18 @@ const FilterPanel = ({
     }
   };
 
-  const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const price = query.price;
-    if (event.target.name === "minPrice") {
-      price.minPrice = Number(event.target.value);
+  const handleSetMaxPrice = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.checked);
+    if (event.target.checked) {
+      setIsMaxPrice(true)
+      setQuery((prevQuery) => ({
+        ...prevQuery,
+        price: { minPrice: 1000, maxPrice: 1000000 },
+      }));
     } else {
-      price.maxPrice = Number(event.target.value);
+      setIsMaxPrice(false)
+      setPriceRange(price.current);
     }
-    setQuery((prevQuery) => ({
-      ...prevQuery,
-      price: price,
-    }));
   };
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +103,7 @@ const FilterPanel = ({
 
   const filterProducts = (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
-    onFilterProducts(query);
+    onFilterProducts({...query, price: !isMaxPrice ? {...priceRange} : query.price});
   };
 
   return (
@@ -121,13 +132,13 @@ const FilterPanel = ({
           </div>
         </div>
         <div className='flex bg-[#FDC175] border-[#A8824F] border-4 border-b-0 w-[35%]'>
-            <p className='p-4'>Filters</p>
+          <p className='p-4'>Filters</p>
         </div>
         <form
           onSubmit={filterProducts}
-          className='flex flex-col gap-4 bg-[#FDC175] border-[#A8824F] border-4 p-4'
+          className='flex flex-col gap-4 w-full bg-[#FDC175] border-[#A8824F] border-4 p-4'
         >
-          <div>
+          <div className='flex flex-col gap-2 py-2'>
             <p>Categories:</p>
             <div className='grid grid-cols-3 px-2'>
               {categories &&
@@ -144,40 +155,61 @@ const FilterPanel = ({
                 ))}
             </div>
           </div>
-          <div>
+          <div className='flex flex-col gap-2 py-2'>
             <p>Price:</p>
-            <div className='flex gap-2'>
-              <div className='flex w-[40%]'>
-                <label htmlFor='minPrice'> Min:</label>
-                <input
-                  type='number'
-                  name='minPrice'
-                  id='minPrice'
-                  value={query.price.minPrice}
-                  onChange={handlePriceChange}
-                  className='w-[5rem]'
+            <div className='flex flex-col gap-2 '>
+              <div className='w-full'>
+                <Slider
+                  range
+                  disabled={isMaxPrice}
+                  allowCross={false}
+                  handleStyle={[
+                    { borderColor: "#A8824F", borderWidth: 4 },
+                    { borderColor: "#A8824F", borderWidth: 4 },
+                  ]}
+                  trackStyle={[{ backgroundColor: "#A8824F" }]}
+                  defaultValue={[priceRange.minPrice, priceRange.maxPrice]}
+                  min={0}
+                  max={1000}
+                  onChange={(value: number | number[]) => {
+                    if (typeof value !== "number") {
+                      const [minPrice, maxPrice] = value;
+                      setPriceRange({ minPrice, maxPrice });
+                    }
+                  }}
                 />
               </div>
-              <div className='flex w-[40%]'>
-                <label htmlFor='maxPrice'> Max: </label>
-                <input
-                  type='number'
-                  name='maxPrice'
-                  id='maxPrice'
-                  value={query.price.maxPrice}
-                  onChange={handlePriceChange}
-                  className='w-[5rem]'
-                />
+              <div className='flex justify-center gap-6 w-full p-2'>
+                <div className='flex'>
+                  Min: <Price value={priceRange.minPrice} />
+                </div>
+                <div className='flex'>
+                  Max: <Price value={priceRange.maxPrice} />
+                </div>
+                <div className='flex gap-2'>
+                  <input
+                    type='checkbox'
+                    name='maxPrice'
+                    id='maxPrice'
+                    onChange={handleSetMaxPrice}
+                  />
+                  <label htmlFor='maxPrice'>More than 1000</label>
+                </div>
               </div>
             </div>
           </div>
-          <button type='submit'>Apply Filters</button>
+          <button
+            type='submit'
+            className='w-[40%] mx-auto mt-4 bg-[#e1b882] text-zinc-600 hover:bg-zinc-600 hover:text-[#A8824F] hover:font-bold duration-100 p-2'
+          >
+            Apply Filters
+          </button>
         </form>
         <form
           onSubmit={filterProducts}
-          className='flex flex-col bg-[#FDC175] border-[#A8824F] border-4'
+          className='flex flex-col bg-[#FDC175] border-[#A8824F] border-4 p-4'
         >
-          <div>
+          <div className='flex flex-col gap-2 py-2'>
             <p>Sort By:</p>
             <div className='grid grid-cols-3 px-2'>
               {sorting.map((sortType, index) => (
@@ -194,7 +226,12 @@ const FilterPanel = ({
             </div>
           </div>
 
-          <button type='submit'>Sort</button>
+          <button
+            type='submit'
+            className='w-[40%] mx-auto mt-4 bg-[#e1b882] text-zinc-600 hover:bg-zinc-600 hover:text-[#A8824F] hover:font-bold duration-100 p-2'
+          >
+            Sort
+          </button>
         </form>
       </div>
 
@@ -264,9 +301,9 @@ const FilterPanel = ({
           </div>
           <form
             onSubmit={filterProducts}
-            className='flex flex-col bg-[#FDC175] border-[#A8824F] border-4'
+            className='flex flex-col bg-[#FDC175] border-[#A8824F] border-4 p-4'
           >
-            <div>
+            <div className='flex flex-col gap-2 py-2'>
               <p>Categories:</p>
               <div className='grid grid-cols-3 px-2'>
                 {categories &&
@@ -283,40 +320,61 @@ const FilterPanel = ({
                   ))}
               </div>
             </div>
-            <div>
+            <div className='flex flex-col gap-2 py-2'>
               <p>Price:</p>
-              <div className='flex gap-2'>
-                <div className='flex w-[40%]'>
-                  <label htmlFor='minPrice'> Min:</label>
-                  <input
-                    type='number'
-                    name='minPrice'
-                    id='minPrice'
-                    value={query.price.minPrice}
-                    onChange={handlePriceChange}
-                    className='w-[5rem]'
-                  />
+              <div className='flex flex-col gap-2 '>
+              <div className='w-full'>
+                <Slider
+                  range
+                  disabled={isMaxPrice}
+                  allowCross={false}
+                  handleStyle={[
+                    { borderColor: "#A8824F", borderWidth: 4 },
+                    { borderColor: "#A8824F", borderWidth: 4 },
+                  ]}
+                  trackStyle={[{ backgroundColor: "#A8824F" }]}
+                  defaultValue={[priceRange.minPrice, priceRange.maxPrice]}
+                  min={0}
+                  max={1000}
+                  onChange={(value: number | number[]) => {
+                    if (typeof value !== "number") {
+                      const [minPrice, maxPrice] = value;
+                      setPriceRange({ minPrice, maxPrice });
+                    }
+                  }}
+                />
+              </div>
+              <div className='flex justify-center gap-6 w-full p-2'>
+                <div className='flex'>
+                  Min: <Price value={priceRange.minPrice} />
                 </div>
-                <div className='flex w-[40%]'>
-                  <label htmlFor='maxPrice'> Max: </label>
+                <div className='flex'>
+                  Max: <Price value={priceRange.maxPrice} />
+                </div>
+                <div className='flex gap-2'>
                   <input
-                    type='number'
+                    type='checkbox'
                     name='maxPrice'
                     id='maxPrice'
-                    value={query.price.maxPrice}
-                    onChange={handlePriceChange}
-                    className='w-[5rem]'
+                    onChange={handleSetMaxPrice}
                   />
+                  <label htmlFor='maxPrice'>More than 1000</label>
                 </div>
               </div>
             </div>
-            <button type='submit'>Apply Filters</button>
+          </div>
+            <button
+              type='submit'
+              className='w-[40%] mx-auto mt-4 bg-[#e1b882] text-zinc-600 hover:bg-zinc-600 hover:text-[#A8824F] hover:font-bold duration-100 p-2'
+            >
+              Apply Filters
+            </button>
           </form>
           <form
             onSubmit={filterProducts}
-            className='flex flex-col bg-[#FDC175] border-[#A8824F] border-4'
+            className='flex flex-col bg-[#FDC175] border-[#A8824F] border-4 border-t-0 p-4'
           >
-            <div>
+            <div className='flex flex-col gap-2 py-2'>
               <p>Sort By:</p>
               <div className='grid grid-cols-3 px-2'>
                 {sorting.map((sortType, index) => (
@@ -333,7 +391,12 @@ const FilterPanel = ({
               </div>
             </div>
 
-            <button type='submit'>Sort</button>
+            <button
+              type='submit'
+              className='w-[40%] mx-auto mt-4 bg-[#e1b882] text-zinc-600 hover:bg-zinc-600 hover:text-[#A8824F] hover:font-bold duration-100 p-2'
+            >
+              Sort
+            </button>
           </form>
         </div>
       )}

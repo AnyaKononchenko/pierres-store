@@ -36,7 +36,7 @@ const Profile = () => {
     dispatch(getProfile(accessToken));
     if (response.status === "error") {
       console.log("error", response.message);
-      dispatch(logoutUser());
+      // dispatch(logoutUser());
     }
   }, [accessToken, dispatch, response.message, response.status]);
 
@@ -89,7 +89,7 @@ const Profile = () => {
   return (
     <>
       {pending && <Loading />}
-      <div className='flex flex-col lg:flex-row justify-between w-[90vw] lg:w-[60vw] h-full mx-auto bg-[#FDC175] border-[#A8824F] border-4'>
+      <div className='flex flex-col lg:flex-row justify-between w-[90vw] lg:w-[60vw] h-full my-16 bg-[#FDC175] border-[#A8824F] border-4'>
         <div className='flex flex-col lg:flex-row w-full gap-2 items-center p-8 lg:py-16'>
           <div className='flex flex-col items-center gap-2 w-full lg:w-[40%]'>
             <ImageLoader

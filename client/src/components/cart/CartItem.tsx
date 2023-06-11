@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
+import { RiDeleteBinFill } from "react-icons/ri";
 
 import { ProductWithCategory } from "@customTypes/products";
 import ImageLoader from "components/helpers/ImageLoader";
@@ -6,7 +7,10 @@ import Placeholder from "../../assets/product-placeholder.png";
 import Overlay from "../../assets/Recipe-Overlay.png";
 import Price from "components/helpers/Price";
 import { useAppDispatch } from "redux/hooks";
-import { changeProductAmount, removeFromCart } from "features/cartSlice";
+import {
+  changeProductAmount,
+  removeFromCart,
+} from "features/cartSlice";
 
 const CartItem = ({
   product,
@@ -23,13 +27,17 @@ const CartItem = ({
     switch (sign) {
       case "+":
         if (amount < 100) {
-          dispatch(changeProductAmount({name: product.slug, amount: amount + 1}))
+          dispatch(
+            changeProductAmount({ name: product.slug, amount: amount + 1 })
+          );
         }
         onAmountChange(product.price);
         break;
       case "-":
         if (amount > 1) {
-          dispatch(changeProductAmount({name: product.slug, amount: amount - 1}))
+          dispatch(
+            changeProductAmount({ name: product.slug, amount: amount - 1 })
+          );
           onAmountChange(-product.price);
         }
         break;
@@ -62,11 +70,11 @@ const CartItem = ({
             />
           )}
         </div>
-        <div className="flex lg:justify-end justify-center">
+        <div className='flex lg:justify-end justify-center'>
           <p>{product.name}</p>
         </div>
 
-        <div className="flex lg:justify-start justify-center">
+        <div className='flex lg:justify-start justify-center'>
           <Price value={product.price} />
         </div>
       </div>
@@ -89,10 +97,11 @@ const CartItem = ({
         </button>
       </div>
       <button
-        className='ml-1 hover:font-bold duration-100'
+        className='ml-1'
         onClick={handleRemove}
+        aria-label='Delete an item'
       >
-        Remove
+        <RiDeleteBinFill className='text-[#A8824F] text-[1.6rem] lg:text-[1.8rem] mx-auto hover:text-[#795b33] duration-100' />
       </button>
     </div>
   );

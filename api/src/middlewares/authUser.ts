@@ -11,9 +11,7 @@ import mongoose from 'mongoose'
 
 const isAuth = (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log(req.headers.authorization)
     if (!req.headers.authorization?.startsWith('Bearer ')) {
-      console.log('no headers')
       throw new UnauthorizedError('Please, log in to continue.')
     }
 
