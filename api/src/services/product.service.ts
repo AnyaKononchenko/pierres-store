@@ -102,11 +102,8 @@ const update = async (
 ): Promise<ProductDocument | null> => {
   let oldImage
   if (update.image) {
-    console.log('there is a new image')
-    console.log(update.image)
     const product = await Product.findOne({ slug: productName })
     oldImage = product && product.image
-    console.log(oldImage)
   }
 
   update.season = update.season.split(',') as Season[]

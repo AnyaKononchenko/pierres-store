@@ -114,12 +114,6 @@ const ProductForm = ({
 
     type FormDataEntry = [string, string | Blob];
 
-    console.log(formData)
-    console.log(formData.image)
-    // if(formData.image === initialState.image){
-    //   formData.image = null
-    // }
-
     const newProduct = new FormData();
 
     if (formData.season.length > 0) {
