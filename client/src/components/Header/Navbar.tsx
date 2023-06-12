@@ -14,7 +14,7 @@ const Navbar = () => {
   const [navOpen, setNavOpen] = useState<boolean>(false);
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
   const user = useAppSelector(selectUser);
-  const cart = useAppSelector(selectCart)
+  const cart = useAppSelector(selectCart);
 
   const handleNavOpen = () => {
     setNavOpen(!navOpen);
@@ -37,20 +37,27 @@ const Navbar = () => {
         <li className='p-4 hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#FDC175]'>
           <Link to='/store'>Store</Link>
         </li>
-        <li className='p-4 hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#FDC175]'>
-          <Link to='/profile'>Profile</Link>
-        </li>
-        <li className='p-4 hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#FDC175]'>
-          <Link to='/cart'>{isLoggedIn ? `Cart (${cart.length})`: 'Cart'}</Link>
-        </li>
         <li className='p-4  hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#FDC175]'>
           <Link to='/cart'>Partners</Link>
         </li>
+        {!user.isAdmin && (
+          <li className='p-4 hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#FDC175]'>
+            <Link to='/cart'>
+              {isLoggedIn ? `Cart (${cart.length})` : "Cart"}
+            </Link>
+          </li>
+        )}
         {user.isAdmin && (
-          <li className='p-4 hover: underline hover:underline-offset-2 hover:decoration-2 hover:decoration-[#FDC175]'>
+          <li className='p-4 hover:underline hover:underline-offset-2 hover:decoration-2 hover:decoration-[#FDC175]'>
             <Link to='/dashboard'>Dashboard</Link>
           </li>
         )}
+        <li className='p-4 hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#FDC175]'>
+          <Link to='/profile' className="flex gap-2">
+            {isLoggedIn && <img src={`${process.env.REACT_APP_BASE_URL}/media/images/users/${user.image}`} alt="profile icon" className="w-[1.5rem] aspect-square"/>}
+            <span>Profile</span>
+          </Link>
+        </li>
       </ul>
 
       {isLoggedIn ? (
@@ -93,7 +100,9 @@ const Navbar = () => {
             <li className='p-4 basic-panel'>Profile</li>
           </Link>
           <Link to='/cart' onClick={() => handleNavOpen()}>
-            <li className='p-4 basic-panel'>{isLoggedIn ? `Cart (${cart.length})`: 'Cart'}</li>
+            <li className='p-4 basic-panel'>
+              {isLoggedIn ? `Cart (${cart.length})` : "Cart"}
+            </li>
           </Link>
           <Link to='/cart' onClick={() => handleNavOpen()}>
             <li className='p-4 basic-panel'>Partners</li>
