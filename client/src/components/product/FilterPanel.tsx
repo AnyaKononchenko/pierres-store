@@ -110,7 +110,7 @@ const FilterPanel = ({
     <section
       className={`flex ${
         !isOpen ? "justify-end" : "justify-start"
-      } lg:max-w-[30vw] w-[90vw]`}
+      } lg:max-w-[30vw] w-full`}
     >
       <div className='hidden lg:flex flex-col w-full'>
         <div className='flex bg-[#FDC175] border-[#A8824F] border-4 w-[60%] mx-auto mb-10'>
@@ -237,7 +237,7 @@ const FilterPanel = ({
 
       {/* Mobile menu */}
       {!isOpen ? (
-        <div className='flex items-center gap-2 lg:hidden'>
+        <div className='flex items-center gap-2 lg:hidden w-full'>
           <div className='flex bg-[#FDC175] border-[#A8824F] border-4'>
             <input
               type='text'
@@ -246,7 +246,7 @@ const FilterPanel = ({
               value={query.search}
               onChange={handleSearch}
               placeholder='Search here..'
-              className='bg-inherit p-4'
+              className='bg-inherit p-4 w-[80%]'
             />
             <div className='border-l-[#A8824F] border-l-4'>
               <BsSearch

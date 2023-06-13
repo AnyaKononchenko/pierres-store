@@ -1,16 +1,12 @@
 import React from "react";
 import { RiDeleteBinFill } from "react-icons/ri";
 
-import { ProductWithCategory } from "@customTypes/products";
-import ImageLoader from "components/helpers/ImageLoader";
-import Placeholder from "../../assets/product-placeholder.png";
-import Overlay from "../../assets/Recipe-Overlay.png";
 import Price from "components/helpers/Price";
+import ImageLoader from "components/helpers/ImageLoader";
 import { useAppDispatch } from "redux/hooks";
-import {
-  changeProductAmount,
-  removeFromCart,
-} from "features/cartSlice";
+import { ProductWithCategory } from "@customTypes/products";
+import { ProductPlaceholder, RecipeIcon } from "../../assets";
+import { changeProductAmount, removeFromCart } from "features/cartSlice";
 
 const CartItem = ({
   product,
@@ -57,14 +53,14 @@ const CartItem = ({
           <ImageLoader
             imageSrc={`/products/${product.image}`}
             alt={product.name}
-            placeholderSrc={Placeholder}
+            placeholderSrc={ProductPlaceholder}
             styles={`w-[3rem] lg:w-[5rem] h-auto aspect-square ${
               product.category.name === "Recipe" && "grayscale"
             }`}
           />
           {product.category.name === "Recipe" && (
             <img
-              src={Overlay}
+              src={RecipeIcon}
               alt='Recipe Mark'
               className='absolute bottom-0 right-[20%] w-[50%]'
             />

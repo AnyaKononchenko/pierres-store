@@ -53,8 +53,14 @@ const Navbar = () => {
           </li>
         )}
         <li className='p-4 hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#FDC175]'>
-          <Link to='/profile' className="flex gap-2">
-            {isLoggedIn && <img src={`${process.env.REACT_APP_BASE_URL}/media/images/users/${user.image}`} alt="profile icon" className="w-[1.5rem] aspect-square"/>}
+          <Link to='/profile' className='flex gap-2'>
+            {isLoggedIn && (
+              <img
+                src={`${process.env.REACT_APP_BASE_URL}/media/images/users/${user.image}`}
+                alt='profile icon'
+                className='w-[1.5rem] aspect-square'
+              />
+            )}
             <span>Profile</span>
           </Link>
         </li>
@@ -96,17 +102,28 @@ const Navbar = () => {
           <Link to='/store' onClick={() => handleNavOpen()}>
             <li className='p-4 basic-panel'>Store</li>
           </Link>
-          <Link to='/profile' onClick={() => handleNavOpen()}>
-            <li className='p-4 basic-panel'>Profile</li>
-          </Link>
-          <Link to='/cart' onClick={() => handleNavOpen()}>
-            <li className='p-4 basic-panel'>
-              {isLoggedIn ? `Cart (${cart.length})` : "Cart"}
-            </li>
-          </Link>
           <Link to='/cart' onClick={() => handleNavOpen()}>
             <li className='p-4 basic-panel'>Partners</li>
           </Link>
+          <Link to='/profile' onClick={() => handleNavOpen()}>
+            <li className='p-4 basic-panel flex gap-2'>
+              {isLoggedIn && (
+                <img
+                  src={`${process.env.REACT_APP_BASE_URL}/media/images/users/${user.image}`}
+                  alt='profile icon'
+                  className='w-[1.5rem] aspect-square'
+                />
+              )}
+              <span>Profile</span>
+            </li>
+          </Link>
+          {!user.isAdmin && (
+            <Link to='/cart' onClick={() => handleNavOpen()}>
+              <li className='p-4 basic-panel'>
+                {isLoggedIn ? `Cart (${cart.length})` : "Cart"}
+              </li>
+            </Link>
+          )}
           {user.isAdmin && (
             <Link to='/dashboard' onClick={() => handleNavOpen()}>
               <li className='p-4 basic-panel'>Dashboard</li>

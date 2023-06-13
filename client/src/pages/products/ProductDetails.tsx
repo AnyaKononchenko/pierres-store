@@ -10,7 +10,7 @@ import {
   selectProduct,
   selectResponse,
 } from "features/productsSlice";
-import ProductPlaceholder from "../../assets/product-placeholder.png";
+import { ProductPlaceholder } from "../../assets";
 import {
   SilverQuality,
   GoldQuality,
@@ -34,7 +34,7 @@ const ProductDetails = () => {
 
   const { slug } = useParams();
 
-  const seasons = [Spring, Summer, Fall, Winter]
+  const seasons = [Spring, Summer, Fall, Winter];
 
   const isInCart = cart.some((cartProduct) => cartProduct.name === slug);
 
@@ -79,7 +79,7 @@ const ProductDetails = () => {
 
         {product && (
           <div className='flex flex-col lg:flex-row justify-between lg:justify-around gap-4 flex-nowrap lg:flex-wrap w-[90vw] md:w-[60vw] lg:min-w-[40vw] xl:w-[40vw] min-h-[40vh] mx-auto bg-[#FDC175] border-[#A8824F] border-4 p-4 lg:py-6'>
-            <div className="flex flex-row lg:flex-col justify-between lg:justify-start gap-2 lg:gap-6">
+            <div className='flex flex-row lg:flex-col justify-between lg:justify-start gap-2 lg:gap-6'>
               <div className='relative flex justify-center items-center w-[10rem] lg:w-[12rem] border-[#A8824F] border-4 mx-auto p-4'>
                 <ImageLoader
                   imageSrc={`products/${product.image}`}
@@ -87,17 +87,34 @@ const ProductDetails = () => {
                   placeholderSrc={ProductPlaceholder}
                   styles='w-[8rem] lg:w-[10rem] h-auto'
                 />
-                {product.quality !== Quality.regular && <img
-                  src={getQualityIcon()}
-                  alt={product.quality}
-                  className='absolute bottom-3 right-[-2rem] w-[5rem] animate-pulse duration-75'
-                />}
+                {product.quality !== Quality.regular && (
+                  <img
+                    src={getQualityIcon()}
+                    alt={product.quality}
+                    className='absolute bottom-3 right-[-2rem] w-[5rem] animate-pulse duration-75'
+                  />
+                )}
               </div>
-              <div className={`self-start grid ${product.season.length > 1 ? 'grid-cols-2' : 'grid-cols-1'} gap-x-2 lg:grid-cols-4`}>
-                {(product.season[0] !== 'Not-Seasonal') && product.season.map((season: string) => (<div className="relative">
-                  <img src={seasons.find((s) => s.match(new RegExp(season, 'ig')))} alt={`${season} icon`} className='peer'/>
-                  <p className="invisible peer-hover:visible duration-100">{season}</p>
-                </div>))}
+              <div
+                className={`self-start grid ${
+                  product.season.length > 1 ? "grid-cols-2" : "grid-cols-1"
+                } gap-x-2 lg:grid-cols-4`}
+              >
+                {product.season[0] !== "Not-Seasonal" &&
+                  product.season.map((season: string) => (
+                    <div className='relative'>
+                      <img
+                        src={seasons.find((s) =>
+                          s.match(new RegExp(season, "ig"))
+                        )}
+                        alt={`${season} icon`}
+                        className='peer'
+                      />
+                      <p className='invisible peer-hover:visible duration-100'>
+                        {season}
+                      </p>
+                    </div>
+                  ))}
               </div>
             </div>
             <div className='flex flex-col gap-2 w-full lg:w-[50%]'>

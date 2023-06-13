@@ -4,7 +4,7 @@ import { AiFillGithub, AiFillLinkedin } from "react-icons/ai";
 
 const Footer = () => {
   return (
-    <footer className="flex flex-col gap-4 items-center min-h-[10vh] text-[1.1rem] text-[#FDC175] p-4">
+    <footer className="flex flex-col gap-4 items-center min-h-[10vh] text-[1.1rem] text-[#FDC175] bg-[#002B39] p-4">
       <div className="flex gap-2">
         <p>
           Created by <span className="underline underline-offset-4 decoration-2 decoration-inherit hover:text-[#b48445]">Anna Kononchenko</span> in 2023

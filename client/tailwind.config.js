@@ -12,6 +12,7 @@ module.exports = {
       },
       backgroundImage: {
         'mainBackground': "url('./assets/stardew-background-edited.png')",
+        'homeBanner': "url('./assets/sky-fence.jpg')",
       },
     },
   },

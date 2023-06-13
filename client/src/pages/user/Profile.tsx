@@ -5,7 +5,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AiOutlineClose } from "react-icons/ai";
 
-import ProfilePlaceholder from "../../assets/userProfile-placeholder.png";
+import { UserPlaceholder } from "../../assets";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import {
   logoutUser,
@@ -95,7 +95,7 @@ const Profile = () => {
             <ImageLoader
               imageSrc={`users/${userInfo.image}`}
               alt={user.name}
-              placeholderSrc={ProfilePlaceholder}
+              placeholderSrc={UserPlaceholder}
               styles='w-[10rem] lg:w-[15rem] mx-auto'
             />
             <p

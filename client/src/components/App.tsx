@@ -4,7 +4,7 @@ import Index from "routes";
 
 const App = () => {
   return (
-    <div className="font-gothic bg-mainBackground bg-cover bg-no-repeat bg-top">
+    <div className="font-gothic">
       <Provider store={store}>
         <Index />
       </Provider>
