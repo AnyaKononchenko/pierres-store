@@ -8,7 +8,7 @@ import {
 } from "react-icons/tb";
 
 import { CategoryDocument } from "@customTypes/categories";
-import { ProductDocument } from "@customTypes/products";
+import { ProductWithCategory } from "@customTypes/products";
 import { UserDocument } from "@customTypes/users";
 import { ExpandUser, ExpandProduct, ExpandCategory } from "./expand";
 
@@ -18,7 +18,7 @@ const Item = ({
   item,
   onDelete,
 }: {
-  item: CategoryDocument | UserDocument | ProductDocument;
+  item: CategoryDocument | UserDocument | ProductWithCategory;
   onDelete: (item: ItemType) => void;
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);

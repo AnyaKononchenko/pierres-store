@@ -2,7 +2,7 @@ import { CategoryDocument } from "./categories"
 
 export type ProductDocument = {
   name: string
-  slug?:string
+  slug?: string
   image?: File
   description: string
   price: number
@@ -16,7 +16,7 @@ export type ProductDocument = {
 }
 export type ProductWithCategory = {
   name: string
-  slug?:string
+  slug?: string
   image?: File
   description: string
   price: number
@@ -30,9 +30,11 @@ export type ProductWithCategory = {
 }
 
 export type FilterQuery = {
-  category: string[];
-  price: { minPrice: number; maxPrice: number };
-  search: string;
+  category: string[]
+  price: { minPrice: number, maxPrice: number }
+  sold?: { min: number, max: number }
+  season?: string
+  search: string
   sort: string[]
   page: number
   limit: number
@@ -50,6 +52,7 @@ export enum Season {
   summer = 'Summer',
   fall = 'Fall',
   winter = 'Winter',
+  notSeasonal = 'Not-Seasonal'
 }
 
 export enum Size {

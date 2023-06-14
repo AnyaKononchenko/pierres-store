@@ -1,10 +1,10 @@
 // @ts-nocheck
-import { ProductDocument } from "@customTypes/products";
+import { ProductWithCategory } from "@customTypes/products";
 import React from "react";
 
 import { ProductForm } from "components/product";
 
-const ExpandProduct = ({ product, isEdit }: { product: ProductDocument, isEdit: boolean }) => {
+const ExpandProduct = ({ product, isEdit }: { product: ProductWithCategory, isEdit: boolean }) => {
   return (
     <>
       {!isEdit ? (

@@ -1,5 +1,5 @@
 import { CategoryDocument } from "./categories"
-import { ProductDocument } from "./products"
+import { ProductDocument, ProductWithCategory } from "./products"
 import { UserDocument } from "./users"
 
 export type ProductResponse = {
@@ -36,7 +36,7 @@ export type PopUpProps = {
 };
 
 
-export type ItemType = UserDocument | ProductDocument | CategoryDocument;
+export type ItemType = UserDocument | ProductWithCategory | CategoryDocument;
 
 export enum LoginVariant {
   regular = 'regular',

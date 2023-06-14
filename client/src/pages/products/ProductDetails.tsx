@@ -22,7 +22,7 @@ import {
 } from "assets";
 import { ImageLoader, Loading, Price } from "components";
 import { addToCart, removeFromCart, selectCart } from "features/cartSlice";
-import { Quality } from "@customTypes/products";
+import { Quality, Season } from "@customTypes/products";
 
 const ProductDetails = () => {
   const navigate = useNavigate();
@@ -100,7 +100,7 @@ const ProductDetails = () => {
                   product.season.length > 1 ? "grid-cols-2" : "grid-cols-1"
                 } gap-x-2 lg:grid-cols-4`}
               >
-                {product.season[0] !== "Not-Seasonal" &&
+                {product.season[0] !== Season.notSeasonal &&
                   product.season.map((season: string) => (
                     <div className='relative'>
                       <img

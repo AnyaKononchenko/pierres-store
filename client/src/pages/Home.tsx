@@ -1,3 +1,4 @@
+import { useState, useEffect, useMemo } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TbArrowBigRightLinesFilled } from "react-icons/tb";
 import { BiMapPin } from "react-icons/bi";
@@ -12,10 +13,60 @@ import {
   Community,
   Cashback,
   PierreSignature,
+  Winter,
+  Summer,
+  Spring,
+  Fall,
 } from "assets";
+import { useAppDispatch, useAppSelector } from "redux/hooks";
+import {
+  getProducts,
+  selectPending,
+  selectProducts,
+  selectResponse,
+} from "features/productsSlice";
+import { FilterQuery, ProductWithCategory } from "@customTypes/products";
+import { BestSeller } from "components/product";
+
+const query: FilterQuery = {
+  category: [],
+  price: { minPrice: 0, maxPrice: 1000000 },
+  search: "",
+  sort: ["-sold"],
+  page: 1,
+  limit: 100,
+};
 
 const Home = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const products = useAppSelector(selectProducts);
+  const response = useAppSelector(selectResponse);
+  const loading = useAppSelector(selectPending);
+  let bestSellers: ProductWithCategory[] = [];
+
+  const seasons = [Spring, Summer, Fall, Winter];
+
+  const currentSeason = useMemo(() => {
+    const currentMonth = new Date().getMonth() + 1;
+    if (currentMonth >= 3 && currentMonth <= 5) {
+      return "Spring";
+    } else if (currentMonth >= 6 && currentMonth <= 8) {
+      return "Summer";
+    } else if (currentMonth >= 9 && currentMonth <= 11) {
+      return "Autumn";
+    } else {
+      return "Winter";
+    }
+  }, []);
+
+  useEffect(() => {
+    dispatch(getProducts({ ...query, season: currentSeason }));
+  }, [currentSeason, dispatch]);
+
+  if (products && products.length > 0) {
+    bestSellers = products.slice(0, 7);
+  }
 
   const handleClickScroll = (id: string) => {
     const element = document.getElementById(id);
@@ -26,7 +77,7 @@ const Home = () => {
 
   return (
     <section className='pt-6 w-[100vw]'>
-      <article className='flex flex-col gap-6 p-4 bg-[#1C0D25] min-h-[80vh]'>
+      <article className='flex flex-col gap-6 p-4 bg-[#1C0D25] min-h-[90vh]'>
         <div className='flex flex-col lg:flex-row gap-6 justify-center lg:justify-between items-center lg:pl-36'>
           <div className='flex flex-col justify-center items-center gap-4 w-full lg:w-[40%]'>
             <h1 className='font-silkscreen font-bold text-zinc-200 text-[2rem] lg:text-[3rem] text-center lg:text-left mb-10'>
@@ -81,10 +132,28 @@ const Home = () => {
           </div>
         </div>
       </article>
-      <article className='flex flex-col justify-center items-center bg-[#653736] min-h-[50vh] py-10'>
-        <h2 className='font-silkscreen text-[1.4rem] text-center font-bold text-white mb-6'>
-          Best Sellers
-        </h2>
+      <article className='flex flex-col justify-center items-center bg-[#653736] w-full min-h-[60vh] py-10 '>
+        <div className='flex flex-col justify-between gap-4 w-[90vw] lg:w-[60vw]'>
+          <div className='self-end flex flex-row-reverse items-center gap-2'>
+            <img
+              src={seasons.find((s) =>
+                s.match(new RegExp(currentSeason, "ig"))
+              )}
+              alt={`${currentSeason} icon`}
+              className='peer'
+            />
+            <p className='invisible peer-hover:visible duration-100 text-white'>
+              It's {currentSeason}!
+            </p>
+          </div>
+          <h2 className='font-silkscreen text-[1.4rem] text-center font-bold text-white mb-6'>
+            Best Sellers of the Season
+          </h2>
+        </div>
+        <div className="flex items-center w-[90vw] lg:w-[60vw] min-h-[60vh] overflow-x-scroll snap-x scrollbar-thin scrollbar-thumb-white scrollbar-track-[#7f6666]">
+          {bestSellers.length > 0 &&
+            bestSellers.map((product, index) => <BestSeller key={index} product={product}/>)}
+        </div>
       </article>
       <article className='flex flex-col justify-center items-center bg-white min-h-[50vh] py-10'>
         <h2 className='font-silkscreen text-[1.4rem] text-center font-bold mb-6'>

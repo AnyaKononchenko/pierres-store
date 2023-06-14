@@ -35,9 +35,9 @@ const findAll = async (
   query: FilterQuery
 ): Promise<{ info: object; products: ProductDocument[] }> => {
   // to filter
-  const { category, price, search } = query
+  const { category, price, sold, season, search, sort } = query
 
-  const filterQuery = { category, price }
+  const filterQuery = { category, price, sold, season }
 
   let filterString = JSON.stringify(filterQuery)
   filterString = filterString.replace(
@@ -52,8 +52,9 @@ const findAll = async (
 
   // to sort
   let sortBy = '-createdAt'
-  if (query.sort) {
-    sortBy = query.sort.split(',').join(' ')
+  if (sort) {
+    console.log(sort)
+    sortBy = sort.split(',').join(' ')
   }
 
   // pagination

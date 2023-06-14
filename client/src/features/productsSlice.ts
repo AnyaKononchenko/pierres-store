@@ -1,12 +1,11 @@
 // @ts-nocheck
+import axios from 'axios';
 import { RootState } from '../redux/store';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
-import { FilterQuery, PaginationInfo, ProductType } from '@customTypes/products';
 
+import { FilterQuery, PaginationInfo, ProductWithCategory } from '@customTypes/products';
 
-
-const initialState: { products: ProductType[], product: ProductType, info: PaginationInfo, pending: boolean, response: CommonResponse } = { products: [], product: null, info: {}, pending: false, response: {} }
+const initialState: { products: ProductWithCategory[], product: ProductWithCategory, info: PaginationInfo, pending: boolean, response: CommonResponse } = { products: [], product: null, info: {}, pending: false, response: {} }
 
 export const getProduct = createAsyncThunk(
   'products/getProduct',
@@ -32,8 +31,11 @@ export const getProducts = createAsyncThunk(
       const searchQuery = `search=${query.search}`
       const paginationQuery = `page=${query.page}&limit=${query.limit}`
       const sortQuery = `sort=${query.sort}`
+      const soldQuery = query.sold && `sold[gte]=${query.sold.min}&sold[lte]=${query.sold.max}`
+      const seasonQuery = query.season && `season=${query.season}`
 
-      const filterQuery = `${categoryQuery}&${priceQuery}&${searchQuery}&${paginationQuery}&${sortQuery}`
+      const filterQuery = `${categoryQuery}&${priceQuery}&${searchQuery}&${paginationQuery}&${sortQuery}${soldQuery ? `&${soldQuery}` : ''}${seasonQuery ? `&${seasonQuery}` : ''}`
+
       const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/products?${filterQuery}`)
       return response.data
     } catch (error) {

@@ -270,13 +270,13 @@ const FilterPanel = ({
       ) : (
         <div className='flex flex-col w-full lg:hidden'>
           <div className='flex justify-between gap-2'>
-            <div className='flex bg-[#FDC175] border-[#A8824F] border-4 border-b-0 w-[35%]'>
+            <div className='flex bg-[#FDC175] border-[#A8824F] border-4 border-b-0 w-[40%]'>
               <p className='p-4'>Filters</p>
-              <div className='border-l-[#A8824F] border-l-4'>
+              <div className='flex justify-center items-center border-l-[#A8824F] border-l-4 w-1/3'>
                 <BsArrowRightCircleFill
                   size={30}
                   onClick={handleOpen}
-                  className='my-3 mx-3 text-[#A8824F] hover:text-[#FFE4A1] cursor-pointer duration-300'
+                  className='text-[1.3rem] text-[#A8824F] hover:text-[#FFE4A1] cursor-pointer duration-300'
                 />
               </div>
             </div>
@@ -288,7 +288,7 @@ const FilterPanel = ({
                 value={query.search}
                 onChange={handleSearch}
                 placeholder='Search here..'
-                className='bg-inherit p-4'
+                className='bg-inherit p-4 w-[80%]'
               />
               <div className='border-l-[#A8824F] border-l-4'>
                 <BsSearch
