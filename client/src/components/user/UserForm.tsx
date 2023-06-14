@@ -81,11 +81,11 @@ const UserForm = ({
 
   return (
     <div className='flex flex-col items-center p-2'>
-      <h2 className='font-bold text-[1.5rem] my-6'>{`${
+      <h2 className='font-bold text-[1.5rem] my-6 text-zinc-300'>{`${
         variant === "create" ? "Join The Pierre's Community!" : "Edit Profile"
       }`}</h2>
       {pending && <Loading />}
-      <form onSubmit={handleSubmit} className='flex flex-col'>
+      <form onSubmit={handleSubmit} className='flex flex-col gap-4 w-[90vw] lg:w-[30vw] bg-[#FDC175] border-[#A8824F] border-4 mx-auto p-4'>
         {/* <label>
           Image:
           <input
@@ -104,7 +104,7 @@ const UserForm = ({
           id='name'
           value={formData.name}
           onChange={handleInputChange}
-          className='border-b border-zinc-600'
+          className='bg-inherit border-b-[#A8824F] border-b-4'
           required
         />
 
@@ -115,7 +115,7 @@ const UserForm = ({
           id='email'
           value={formData.email}
           onChange={handleInputChange}
-          className='border-b border-zinc-600'
+          className='bg-inherit border-b-[#A8824F] border-b-4'
           required
         />
         <label htmlFor='password'>Password:</label>
@@ -125,7 +125,7 @@ const UserForm = ({
           id='password'
           value={formData.password}
           onChange={handleInputChange}
-          className='border-b border-zinc-600'
+          className='bg-inherit border-b-[#A8824F] border-b-4'
           required
         />
 
@@ -136,10 +136,10 @@ const UserForm = ({
           id='address'
           value={formData.address}
           onChange={handleInputChange}
-          className='border-b border-zinc-600'
+          className='bg-inherit border-b-[#A8824F] border-b-4'
           required
         />
-        <button type='submit'>Submit</button>
+        <button type='submit' className="rounded-md mt-3 mx-auto p-2 bg-[#c7a16f] text-zinc-600 hover:bg-zinc-600 hover:text-[#A8824F] hover:font-bold duration-100">Submit</button>
       </form>
       <ToastContainer
         position='top-right'

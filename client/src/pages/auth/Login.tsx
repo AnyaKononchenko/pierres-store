@@ -49,7 +49,7 @@ const Login = ({ variant }: { variant: LoginVariant}) => {
       </Helmet>
       {pending && <Loading />}
       <div className='w-[90vw] md:w-[60vw] lg:w-[40vw] my-16 text-[1.2rem]'>
-        <h1 className='font-bold text-[1.8rem] text-center mb-6'>
+        <h1 className='font-bold text-[1.8rem] text-center mb-6 text-zinc-300'>
           {`${variant === LoginVariant.regular ? "Log in to expore Pierre's!" : "Log in first to proceed :)"}`}
         </h1>
         <form

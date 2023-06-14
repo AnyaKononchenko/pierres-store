@@ -23,7 +23,7 @@ const ForgottenPassword = () => {
       </h2>
       <form
         onSubmit={handlePasswordRecovery}
-        className='flex flex-col gap-4 w-full'
+        className='flex flex-col gap-4 w-full lg:w-[30vw] bg-[#FDC175] border-[#A8824F] border-4 mx-auto p-4'
       >
         <div className='flex gap-2 justify-center items-center my-2'>
           <label htmlFor='email'>Email:</label>
@@ -33,9 +33,10 @@ const ForgottenPassword = () => {
             id='email'
             value={email}
             onChange={handleEmailChange}
+            className='bg-inherit border-b-[#A8824F] border-b-4'
           />
         </div>
-        <button type='submit'>Recover Password</button>
+        <button type='submit' className="rounded-md mt-3 mx-auto p-2 bg-[#c7a16f] text-zinc-600 hover:bg-zinc-600 hover:text-[#A8824F] hover:font-bold duration-100">Recover Password</button>
       </form>
     </section>
   );

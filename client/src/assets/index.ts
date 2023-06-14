@@ -11,6 +11,7 @@ export { default as ProductPlaceholder } from './placeholders/product-placeholde
 export { default as UserPlaceholder } from './placeholders/userProfile-placeholder.png'
 
 export { default as AnimatedJunimo } from './animated/Junimo.gif'
+export { default as Flag } from './animated/Calendar_Flag.gif'
 export { default as Fire } from './animated/fire.gif'
 
 export { default as GoldCoin } from './icons/Gold.png'

@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { selectResponse, verifyUser } from "features/authSlice";
 import Error from "pages/Error";
+import { Flag } from "assets";
 
 const Verify = () => {
   const navigate = useNavigate();
@@ -34,12 +35,13 @@ const Verify = () => {
 
   return (
     <>
-      {isVerified && <div>{response.message}</div>}
+      {isVerified && <section className="flex flex-col items-center justify-center w-[90vw] lg:w-[30vw] h-[40vh] bg-[#FDC175] border-[#A8824F] border-4 mx-auto my-10 p-4">{response.message}</section>}
       {searchParams.get("token") && !isVerified && (
-        <div>
-          <div>You are super close to join Pierre's!</div>
-          <button onClick={handleClick}>Verify Email</button>
-        </div>
+        <section className="flex flex-col items-center justify-between w-[90vw] lg:w-[30vw] h-[40vh] bg-[#FDC175] border-[#A8824F] border-4 mx-auto my-10 p-4">
+          <h2 className="font-bold text-[#1C0D25] text-[1.5rem] text-center">You are super close to join Pierre's!</h2>
+          <img src={Flag} alt="finish mark icon" className="w-[5rem]"/>
+          <button onClick={handleClick} className="rounded-md p-2 bg-[#c7a16f] text-zinc-600 hover:bg-zinc-600 hover:text-[#A8824F] hover:font-bold duration-100">Verify Email</button>
+        </section>
       )}
       {(!(searchParams.get("token")) && !isVerified) && (
         <Error message='Invalid URL' />

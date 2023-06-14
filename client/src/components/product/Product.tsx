@@ -8,11 +8,13 @@ import { ProductWithCategory } from "@customTypes/products";
 import { RecipeIcon, ProductPlaceholder } from "../../assets";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { addToCart, removeFromCart, selectCart } from "features/cartSlice";
+import { selectIsLoggedIn } from "features/authSlice";
 
 const Product = ({ product }: { product: ProductWithCategory }) => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const cart = useAppSelector(selectCart);
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   const isInCart = cart.some(
     (cartProduct) => cartProduct.name === product.slug
@@ -51,7 +53,9 @@ const Product = ({ product }: { product: ProductWithCategory }) => {
           <button
             onClick={(event) => {
               event.stopPropagation();
-              dispatch(addToCart(product.slug));
+              isLoggedIn
+                ? dispatch(addToCart(product.slug))
+                : navigate("/login");
             }}
           >
             <BsFillCartPlusFill className='text-[1.4rem] text-[#846234] hover:text-[#A8824F] duration-100' />
@@ -60,7 +64,9 @@ const Product = ({ product }: { product: ProductWithCategory }) => {
           <button
             onClick={(event) => {
               event.stopPropagation();
-              dispatch(removeFromCart(product.slug));
+              isLoggedIn
+                ? dispatch(removeFromCart(product.slug))
+                : navigate("/login");
             }}
           >
             <BsFillCartDashFill className='text-[1.4rem] text-[#846234] hover:text-[#A8824F] duration-100' />

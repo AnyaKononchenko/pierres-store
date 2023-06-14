@@ -23,6 +23,7 @@ import {
 import { ImageLoader, Loading, Price } from "components";
 import { addToCart, removeFromCart, selectCart } from "features/cartSlice";
 import { Quality, Season } from "@customTypes/products";
+import { selectIsLoggedIn } from "features/authSlice";
 
 const ProductDetails = () => {
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ const ProductDetails = () => {
   const product = useAppSelector(selectProduct);
   const response = useAppSelector(selectResponse);
   const loading = useAppSelector(selectPending);
+  const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
   const { slug } = useParams();
 
@@ -56,11 +58,11 @@ const ProductDetails = () => {
   }, [dispatch, slug]);
 
   const onAddToCart = () => {
-    dispatch(addToCart(slug));
+    isLoggedIn ? dispatch(addToCart(slug)) : navigate("/login");
   };
 
   const onRemoveFromCart = () => {
-    dispatch(removeFromCart(slug));
+    isLoggedIn ? dispatch(removeFromCart(slug)) : navigate("/login");
   };
 
   return (
