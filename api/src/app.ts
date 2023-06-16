@@ -7,7 +7,6 @@ import cookieParser from 'cookie-parser'
 import path from 'path'
 
 import apiErrorHandler from './middlewares/apiErrorHandler'
-// import apiContentType from './middlewares/apiContentType'
 import categoryRouter from './routers/category.router'
 import productRouter from './routers/product.router'
 import userRouter from './routers/user.router'
@@ -23,7 +22,7 @@ app.set('port', process.env.PORT)
 // Global middleware
 app.use(
   cors({
-    origin: 'http://localhost:3000',
+    origin: process.env.CLIENT_URL,
     credentials: true,
   })
 )
