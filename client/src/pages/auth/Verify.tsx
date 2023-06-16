@@ -1,13 +1,14 @@
 // @ts-nocheck
 import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { selectResponse, verifyUser } from "features/authSlice";
-import Error from "pages/Error";
 import { Flag } from "assets";
+import Error from "pages/handlers/Error";
 
 const Verify = () => {
   const navigate = useNavigate();
@@ -34,7 +35,10 @@ const Verify = () => {
   };
 
   return (
-    <>
+    <HelmetProvider>
+      <Helmet>
+        <title>Account verification</title>
+      </Helmet>
       {isVerified && <section className="flex flex-col items-center justify-center w-[90vw] lg:w-[30vw] h-[40vh] bg-[#FDC175] border-[#A8824F] border-4 mx-auto my-10 p-4">{response.message}</section>}
       {searchParams.get("token") && !isVerified && (
         <section className="flex flex-col items-center justify-between w-[90vw] lg:w-[30vw] h-[40vh] bg-[#FDC175] border-[#A8824F] border-4 mx-auto my-10 p-4">
@@ -58,7 +62,7 @@ const Verify = () => {
         pauseOnHover
         theme='dark'
       />
-    </>
+    </HelmetProvider>
   );
 };
 

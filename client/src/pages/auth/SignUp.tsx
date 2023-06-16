@@ -1,18 +1,25 @@
-import { UserDocument } from '@customTypes/users'
-import UserForm from 'components/user/UserForm'
-import React from 'react'
+import React from "react";
+import { Helmet, HelmetProvider } from "react-helmet-async";
+
+import { UserDocument } from "@customTypes/users";
+import UserForm from "components/user/UserForm";
 
 const emptyUser: UserDocument = {
   name: "",
   email: "",
   password: "",
   address: "",
-}
+};
 
 const SignUp = () => {
   return (
-    <UserForm variant='create' initialState={emptyUser}/>
-  )
-}
+    <HelmetProvider>
+      <Helmet>
+        <title>Sign Up to Pierre's</title>
+      </Helmet>
+      <UserForm variant='create' initialState={emptyUser} />
+    </HelmetProvider>
+  );
+};
 
-export default SignUp
+export default SignUp;

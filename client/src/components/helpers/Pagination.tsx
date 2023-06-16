@@ -13,7 +13,6 @@ const Pagination = ({
   onPerPageChange: (page: number) => void;
 }) => {
   const { currentPage, totalPages, limit } = controls;
-  // const [itemsPerPage, setItemsPerPage] = useState(limit)
 
   const handlePageChange = (page: number) => {
     if (page !== currentPage) {
@@ -67,19 +66,19 @@ const Pagination = ({
           </button>
         </li>
       </ul>
-      <div className='flex w-[35%] items-center'>
-        <label htmlFor='limit'>Per Page:</label>
+      <div className='flex items-center px-2'>
+        <label htmlFor='limit' className="w-fit whitespace-nowrap px-4">Per Page:</label>
         <select
           name='category'
           id='category'
           value={limit}
           onChange={handleSelectChange}
-          className='border-b border-zinc-600 bg-transparent cursor-pointer'
+          className='w-[3rem] text-center border-b border-zinc-600 bg-transparent cursor-pointer'
         >
-          <option value='30'>30</option>
-          <option value='20'>20</option>
-          <option value='10'>10</option>
-          <option value='5'>5</option>
+          <option value='30' className="bg-[#5f421c]">30</option>
+          <option value='20' className="bg-[#5f421c]">20</option>
+          <option value='10' className="bg-[#5f421c]">10</option>
+          <option value='5' className="bg-[#5f421c]">5</option>
         </select>
       </div>
     </div>

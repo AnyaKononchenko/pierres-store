@@ -1,5 +1,8 @@
 export { default as Home } from "./Home"
-export { default as Error } from "./Error"
+
+export { default as Error } from "./handlers/Error"
+export { default as NotFound } from "./handlers/NotFound"
+export { default as UnderConstruction } from "./handlers/UnderConstruction"
 
 export { default as Profile } from "./user/Profile"
 export { default as Cart } from "./user/Cart"

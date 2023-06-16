@@ -13,6 +13,8 @@ export { default as UserPlaceholder } from './placeholders/userProfile-placehold
 export { default as AnimatedJunimo } from './animated/Junimo.gif'
 export { default as Flag } from './animated/Calendar_Flag.gif'
 export { default as Fire } from './animated/fire.gif'
+export { default as UnderConstruction } from './animated/leah-elliott.gif'
+export { default as NotFound } from './animated/shane-drinks.gif'
 
 export { default as GoldCoin } from './icons/Gold.png'
 export { default as RecipeIcon } from './icons/Recipe-Overlay.png'

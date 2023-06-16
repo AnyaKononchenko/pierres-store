@@ -38,7 +38,7 @@ const Navbar = () => {
           <Link to='/store'>Store</Link>
         </li>
         <li className='p-4  hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#FDC175]'>
-          <Link to='/cart'>Partners</Link>
+          <Link to='/under-construction'>Partners</Link>
         </li>
         {!user.isAdmin && (
           <li className='p-4 hover:underline hover:underline-offset-4 hover:decoration-2 hover:decoration-[#FDC175]'>
@@ -102,7 +102,7 @@ const Navbar = () => {
           <Link to='/store' onClick={() => handleNavOpen()}>
             <li className='p-4 basic-panel'>Store</li>
           </Link>
-          <Link to='/cart' onClick={() => handleNavOpen()}>
+          <Link to='/under-construction' onClick={() => handleNavOpen()}>
             <li className='p-4 basic-panel'>Partners</li>
           </Link>
           <Link to='/profile' onClick={() => handleNavOpen()}>

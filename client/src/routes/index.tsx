@@ -17,12 +17,14 @@ import {
   RecoverPassword,
   ProductDetails,
   Cart,
+  UnderConstruction,
+  NotFound,
 } from "pages";
+import { LoginVariant } from "@customTypes/common";
 import { Footer, Header } from "components";
 import LoggedInRoute from "./LoggedInRoute";
 import AdminRoute from "./AdminRoute";
 import SignUp from "pages/auth/SignUp";
-import { LoginVariant } from "@customTypes/common";
 
 const Index = () => {
   return (
@@ -42,6 +44,8 @@ const Index = () => {
             <Route path='/forgotten-password' element={<ForgottenPassword />} />
             <Route path='/password-recovery' element={<RecoverPassword />} />
 
+            <Route path='/under-construction' element={<UnderConstruction />} />
+
             <Route element={<LoggedInRoute />}>
               <Route path='/profile' element={<Profile />} />
               <Route path='/cart' element={<Cart />} />
@@ -57,6 +61,9 @@ const Index = () => {
               <Route path='/create-product' element={<CreateProduct />} />
               <Route path='/create-category' element={<CreateCategory />} />
             </Route>
+
+            <Route path='*' element={<NotFound />} />
+
           </Routes>
         </main>
         <Footer />

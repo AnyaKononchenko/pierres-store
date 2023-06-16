@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { useNavigate, useParams } from "react-router-dom";
 import { TiArrowBack } from "react-icons/ti";
 
@@ -8,7 +8,6 @@ import {
   getProduct,
   selectPending,
   selectProduct,
-  selectResponse,
 } from "features/productsSlice";
 import { ProductPlaceholder } from "../../assets";
 import {
@@ -30,7 +29,6 @@ const ProductDetails = () => {
   const dispatch = useAppDispatch();
   const cart = useAppSelector(selectCart);
   const product = useAppSelector(selectProduct);
-  const response = useAppSelector(selectResponse);
   const loading = useAppSelector(selectPending);
   const isLoggedIn = useAppSelector(selectIsLoggedIn);
 
@@ -66,11 +64,11 @@ const ProductDetails = () => {
   };
 
   return (
-    <>
-      {loading && <Loading />}
+    <HelmetProvider>
       <Helmet>
         <title>Pierre's: {slug}</title>
       </Helmet>
+      {loading && <Loading />}
       <article className='relative w-[90vw] lg:w-[60vw] min-h-[80vh] mt-6 pt-14'>
         <button
           className='absolute left-0 top-0 text-[#FDC175] text-[1.7rem] hover:animate-pulse duration-50'
@@ -157,7 +155,7 @@ const ProductDetails = () => {
           </div>
         )}
       </article>
-    </>
+    </HelmetProvider>
   );
 };
 

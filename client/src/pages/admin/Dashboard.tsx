@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { Link } from "react-router-dom";
 
 import { Loading } from "components";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import { getStats, selectPending, selectStats } from "features/helperSlice";
-import { Helmet } from "react-helmet";
 
 const Dashboard = () => {
   const dispatch = useAppDispatch();
@@ -16,7 +16,7 @@ const Dashboard = () => {
   }, [dispatch]);
 
   return (
-    <>
+    <HelmetProvider>
       <Helmet>
         <title>Manager's Tool</title>
       </Helmet>
@@ -64,7 +64,7 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
-    </>
+    </HelmetProvider>
   );
 };
 

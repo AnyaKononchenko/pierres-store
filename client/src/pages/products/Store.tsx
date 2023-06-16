@@ -4,13 +4,12 @@ import ProductList from "components/product/ProductList";
 import { useAppDispatch, useAppSelector } from "redux/hooks";
 import {
   getProducts,
-  selectResponse,
   selectPending,
   selectProducts,
   selectInfo,
 } from "features/productsSlice";
 import { Loading, Pagination } from "components";
-import { Helmet } from "react-helmet";
+import { Helmet, HelmetProvider } from "react-helmet-async";
 import { FilterPanel } from "components/product";
 import { FilterQuery } from "@customTypes/products";
 
@@ -27,7 +26,6 @@ const Store = () => {
   const dispatch = useAppDispatch();
   const pending = useAppSelector(selectPending);
   const info = useAppSelector(selectInfo);
-  const response = useAppSelector(selectResponse);
   const products = useAppSelector(selectProducts);
   const [currentQuery, setCurrentQuery] = useState(initialQuery);
 
@@ -69,30 +67,31 @@ const Store = () => {
   };
 
   return (
-    <div className='flex flex-col'>
+    <HelmetProvider>
       <Helmet>
         <title>Store</title>
       </Helmet>
-      <h2 className='font-bold text-[1.3rem] text-center my-6 text-zinc-300'>
-        Discover thousands of goods here!
-      </h2>
-
-      <div className='flex flex-col lg:flex-row justify-between items-center lg:items-start w-[95vw] p-4 my-3 gap-6'>
-        {pending && <Loading />}
-        <FilterPanel
-          initialQuery={initialQuery}
-          onFilterProducts={onFilterProducts}
-        />
-        {products && <ProductList products={products} />}
+      <div className='flex flex-col'>
+        <h2 className='font-bold text-[1.3rem] text-center my-6 text-zinc-300'>
+          Discover thousands of goods here!
+        </h2>
+        <div className='flex flex-col lg:flex-row justify-between items-center lg:items-start w-[95vw] p-4 my-3 gap-6'>
+          {pending && <Loading />}
+          <FilterPanel
+            initialQuery={initialQuery}
+            onFilterProducts={onFilterProducts}
+          />
+          {products && <ProductList products={products} />}
+        </div>
+        {products.length > 0 && (
+          <Pagination
+            controls={info}
+            onPageChange={handlePageChange}
+            onPerPageChange={handlePerPageChange}
+          />
+        )}
       </div>
-      {products.length > 0 && (
-        <Pagination
-          controls={info}
-          onPageChange={handlePageChange}
-          onPerPageChange={handlePerPageChange}
-        />
-      )}
-    </div>
+    </HelmetProvider>
   );
 };
 
