@@ -37,7 +37,7 @@ export const loginUser = createAsyncThunk(
       }
       return response.data
     } catch (error) {
-      if( error instanceof Error){
+      if(error.message.match(/banned/ig)){
         const customError = {message: error.message, status: 'error'}
         return rejectWithValue(customError)
       }
@@ -163,7 +163,6 @@ export const authSlice = createSlice({
       state.pending = true
     })
     builder.addCase(verifyUser.fulfilled, (state, action) => {
-      console.log("verified:", action.payload)
       state.pending = false
       state.response = action.payload
     })
@@ -176,7 +175,6 @@ export const authSlice = createSlice({
       state.pending = true
     })
     builder.addCase(forgottenPassword.fulfilled, (state, action) => {
-      console.log("forgotten password:", action.payload)
       state.pending = false
       state.response = action.payload
     })
@@ -189,7 +187,6 @@ export const authSlice = createSlice({
       state.pending = true
     })
     builder.addCase(recoverPassword.fulfilled, (state, action) => {
-      console.log("recovered:", action.payload)
       state.pending = false
       state.response = action.payload
     })

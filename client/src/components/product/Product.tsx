@@ -22,17 +22,16 @@ const Product = ({ product }: { product: ProductWithCategory }) => {
 
   return (
     <article
-      className='flex flex-col justify-between p-3 aspect-square border-4 border-r-[#D68F54] border-b-[#D68F54] border-l-[#FFE4A1] border-t-[#FFE4A1]
-      hover:border-l-[#D68F54] hover:border-t-[#D68F54] hover:border-r-[#FFE4A1] hover:border-b-[#FFE4A1] duration-300 hover:cursor-pointer
-    '
+      className='flex flex-col gap-2 w-full h-[14rem] md:h-[15rem] lg:h-[14rem] aspect-square border-4 border-r-[#D68F54] border-b-[#D68F54] border-l-[#FFE4A1] border-t-[#FFE4A1]
+      hover:border-l-[#D68F54] hover:border-t-[#D68F54] hover:border-r-[#FFE4A1] hover:border-b-[#FFE4A1] duration-300 hover:cursor-pointer p-3'
       onClick={() => navigate(`/products/${product.slug}`)}
     >
-      <div className='flex justify-center relative'>
+      <div className='flex justify-center relative w-full'>
         <ImageLoader
           imageSrc={`/products/${product.image}`}
           alt={product.name}
           placeholderSrc={ProductPlaceholder}
-          styles={`w-[5rem] h-auto aspect-square ${
+          styles={`w-[5rem] md:w-[7rem] lg:w-[5.5rem] h-auto aspect-square ${
             product.category.name === "Recipe" && "grayscale"
           }`}
         />
@@ -47,7 +46,7 @@ const Product = ({ product }: { product: ProductWithCategory }) => {
       <div>
         <h3 className='text-bold text-center'>{product.name}</h3>
       </div>
-      <div className='flex justify-between'>
+      <div className='flex justify-between mt-auto'>
         <Price value={product.price} styles='' />
         {!isInCart ? (
           <button

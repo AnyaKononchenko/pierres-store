@@ -18,13 +18,13 @@ const Verify = () => {
   const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
-    if (response.status === 'success') {
+    if (response.status === "success") {
       setIsVerified(true);
       setTimeout(() => {
         navigate("/login");
       }, 3000);
     }
-    if (response.status === 'error') {
+    if (response.status === "error") {
       toast.error(response.message);
       setIsVerified(false);
     }
@@ -39,15 +39,26 @@ const Verify = () => {
       <Helmet>
         <title>Account verification</title>
       </Helmet>
-      {isVerified && <section className="flex flex-col items-center justify-center w-[90vw] lg:w-[30vw] h-[40vh] bg-[#FDC175] border-[#A8824F] border-4 mx-auto my-10 p-4">{response.message}</section>}
-      {searchParams.get("token") && !isVerified && (
-        <section className="flex flex-col items-center justify-between w-[90vw] lg:w-[30vw] h-[40vh] bg-[#FDC175] border-[#A8824F] border-4 mx-auto my-10 p-4">
-          <h2 className="font-bold text-[#1C0D25] text-[1.5rem] text-center">You are super close to join Pierre's!</h2>
-          <img src={Flag} alt="finish mark icon" className="w-[5rem]"/>
-          <button onClick={handleClick} className="rounded-md p-2 bg-[#c7a16f] text-zinc-600 hover:bg-zinc-600 hover:text-[#A8824F] hover:font-bold duration-100">Verify Email</button>
+      {isVerified && (
+        <section className='flex items-center justify-center w-[90vw] lg:w-[30vw] h-[40vh] bg-[#FDC175] border-[#A8824F] border-4 mx-auto my-10 p-4'>
+          <p className="text-center">{response.message}</p>
         </section>
       )}
-      {(!(searchParams.get("token")) && !isVerified) && (
+      {searchParams.get("token") && !isVerified && (
+        <section className='flex flex-col items-center justify-between w-[90vw] lg:w-[30vw] h-[40vh] bg-[#FDC175] border-[#A8824F] border-4 mx-auto my-10 p-4'>
+          <h2 className='font-bold text-[#1C0D25] text-[1.5rem] text-center'>
+            You are super close to join Pierre's!
+          </h2>
+          <img src={Flag} alt='finish mark icon' className='w-[5rem]' />
+          <button
+            onClick={handleClick}
+            className='rounded-md p-2 bg-[#c7a16f] text-zinc-600 hover:bg-zinc-600 hover:text-[#A8824F] hover:font-bold duration-100'
+          >
+            Verify Email
+          </button>
+        </section>
+      )}
+      {!searchParams.get("token") && !isVerified && (
         <Error message='Invalid URL' />
       )}
       <ToastContainer

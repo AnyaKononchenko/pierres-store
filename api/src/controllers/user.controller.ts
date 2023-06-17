@@ -43,7 +43,7 @@ export const signUp = async (
     sendResponse(res, {
       status: 'success',
       statusCode: 201,
-      message: `Registered a new user '${user.name}'. Please, verify your email address to complete a registration.`,
+      message: `Hooray ${user.name}, you are registered!. Please, verify your email address to complete a registration.`,
       payload: { token },
     })
   } catch (error) {

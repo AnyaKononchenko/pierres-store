@@ -107,7 +107,7 @@ const Cart = () => {
               onClick={() => {
                 navigate("/store");
               }}
-              className='self-center flex gap-2 justify-center w-[40%] bg-[#e1b882] text-zinc-600 hover:bg-zinc-600 hover:text-[#A8824F] hover:font-bold duration-100 p-4'
+              className='self-center flex gap-2 justify-center w-fit bg-[#e1b882] text-zinc-600 hover:bg-zinc-600 hover:text-[#A8824F] hover:font-bold duration-100 p-4'
             >
               <FaShoppingBasket className='text-[1.7rem] text-[#A8824F]' /> Go
               Shopping

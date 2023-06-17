@@ -1,12 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Helmet, HelmetProvider } from "react-helmet-async";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-import { useAppDispatch } from "redux/hooks";
-import { recoverPassword } from "features/authSlice";
+import { useAppDispatch, useAppSelector } from "redux/hooks";
+import { recoverPassword, selectResponse } from "features/authSlice";
 
 const RecoverPassword = () => {
+  const navigate = useNavigate()
   const dispatch = useAppDispatch();
+  const response = useAppSelector(selectResponse);
   const [searchParams, setSearchParams] = useSearchParams();
   const [password, setPassword] = useState("");
 
@@ -14,10 +18,18 @@ const RecoverPassword = () => {
     setPassword(event.target.value);
   };
 
+  useEffect(() => {
+    (response.message && response.message.length > 0) && toast.success(response.message);
+    if(response.status === 'success'){
+      setTimeout(() => {
+        navigate('/login')
+      }, 5000)
+    }
+  }, [navigate, response.message, response.status])
+  
+
   const handlePasswordRecovery = (event: React.FormEvent<EventTarget>) => {
     event.preventDefault();
-    console.log(searchParams.get("token"));
-    console.log(password);
     dispatch(recoverPassword({ token: searchParams.get("token"), password }));
   };
 
@@ -26,7 +38,7 @@ const RecoverPassword = () => {
       <Helmet>
         <title>Recover Password</title>
       </Helmet>
-      <section>
+      <section className="w-[90vw] sm:w-[70vw] mx-auto">
         <h2 className='font-bold text-zinc-300 text-[1.5rem] text-center my-6'>
           Password Recovery
         </h2>
@@ -34,15 +46,15 @@ const RecoverPassword = () => {
           onSubmit={handlePasswordRecovery}
           className='flex flex-col gap-4 w-full lg:w-[30vw] bg-[#FDC175] border-[#A8824F] border-4 mx-auto p-4'
         >
-          <div className='flex gap-2 justify-center items-center my-2 '>
-            <label htmlFor='password'>New Password:</label>
+          <div className='flex flex-wrap gap-2 items-center my-2 '>
+            <label htmlFor='password' className="w-fit">New Password:</label>
             <input
               type='password'
               name='password'
               id='password'
               value={password}
               onChange={handlePasswordChange}
-              className='bg-inherit border-b-[#A8824F] border-b-4'
+              className='bg-inherit border-b-[#A8824F] border-b-4 w-full'
             />
           </div>
           <button
@@ -53,6 +65,18 @@ const RecoverPassword = () => {
           </button>
         </form>
       </section>
+      <ToastContainer
+        position='top-right'
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme='dark'
+      />
     </HelmetProvider>
   );
 };

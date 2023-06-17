@@ -38,6 +38,7 @@ const Login = ({ variant }: { variant: LoginVariant }) => {
 
   useEffect(() => {
     if (response.status === "error") {
+      console.log(response)
       response.statusCode !== 403 && toast.error(response.message);
     }
   }, [dispatch, response.message, response.status, response.statusCode]);
@@ -61,26 +62,26 @@ const Login = ({ variant }: { variant: LoginVariant }) => {
             onSubmit={handleSubmit}
             className='flex flex-col justify-center gap-5 p-10 bg-[#FDC175] border-[#A8824F] border-4'
           >
-            <div className='flex'>
-              <label className='w-1/4'>Email:</label>
+            <div className='flex flex-col md:flex-row'>
+              <label className='w-full md:w-1/4'>Email:</label>
               <input
                 type='email'
                 name='email'
                 value={loginData.email}
                 onChange={handleInputChange}
                 required
-                className='bg-inherit border-b-[#A8824F] border-b-4 w-3/4'
+                className='bg-inherit border-b-[#A8824F] border-b-4 w-full md:w-3/4'
               />
             </div>
-            <div className='flex'>
-              <label className='w-1/4'>Password:</label>
+            <div className='flex flex-col md:flex-row'>
+              <label className='w-full md:w-1/4'>Password:</label>
               <input
                 type='password'
                 name='password'
                 value={loginData.password}
                 onChange={handleInputChange}
                 required
-                className='bg-inherit border-b-[#A8824F] border-b-4 w-3/4'
+                className='bg-inherit border-b-[#A8824F] border-b-4 w-full md:w-3/4'
               />
             </div>
             <Link to='/forgotten-password' className='text-sm mx-auto'>
